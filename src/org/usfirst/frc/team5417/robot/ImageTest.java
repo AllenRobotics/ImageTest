@@ -31,40 +31,71 @@ public class ImageTest {
 	{
 		// TODO Auto-generated method stub
 	    MatrixUtilities.LoadOpenCVLibraries();
+	    //Calls Open CV library
 	   
+	      ImageReader reader = new FileImageReader("C:/temp/sampleimage.jpg");
+	      Mat newMat = reader.read();
 	      
-        Mat newMat = MatrixUtilities.readMatFromFile("C:/temp/sampleimage.jpg");
-        
-        
-        
-        //
-        // TODO: filter all colors except a range from the newMat
-        //
-        
-        // here is a sample range for each color channel
-        // TODO: find a real color range
-        byte minRed = (byte)100, maxRed = (byte)150;
-        byte minGreen = (byte)50, maxGreen = (byte)100;
-        byte minBlue = (byte)10, maxBlue = (byte)70;
-        
-        for (int r = 0; r < newMat.rows(); ++r)
-        {
-        	for (int c = 0; c < newMat.cols(); ++c)
-        	{
-        		byte[] rgb = new byte[3];
-        		newMat.get(r, c, rgb);
-        		
-        		// TODO: right here, if the rgb values for this pixel are in the range, do nothing.
-        		//       if the rgb values for this pixel are outside the range, make the pixel black
-        		
-        	}
-        }
-        
-         
-		BufferedImage outputImage = MatrixUtilities.mat2Img(newMat);
-		File outputfile = new File("C:/temp/outputImage.jpg");
-		ImageIO.write(outputImage, "jpg", outputfile);
-		//Mat
+	      MatrixOperation filterColors = new FilterColorOperation(
+	    		  new ChannelRange(90, 120),
+	    		  new ChannelRange(110, 150),
+	    		  new ChannelRange(130, 180));
+	      Mat filteredMat = filterColors.doOperation(newMat);
+	      
+	      ImageWriter writer = new FileImageWriter("C:/temp/outputImage.jpg");
+	      writer.write(filteredMat);
+	      
+	      ImageWriter originalImageWriter = new FileImageWriter("C:/temp/OrigianlImage.jpg");
+	      originalImageWriter.write(newMat);
+	      
+//       // Mat newMat = MatrixUtilities.readMatFromFile("C:/temp/sampleimage.jpg");
+//          
+//        
+//        
+//        //
+//        // TODO: filter all colors except a range from the newMat
+//        //
+//        
+//        // here is a sample range for each color channel
+//        // TODO: find a real color range
+//        byte minRed = (byte)200, maxRed = (byte)255;
+//        byte minGreen = (byte)200, maxGreen = (byte)255;
+//        byte minBlue = (byte)200, maxBlue = (byte)255;
+//        byte[] blackPixel = {(byte)0,(byte)0,(byte)0};
+//        
+//        for (int r = 0; r < newMat.rows(); ++r)
+//        {
+//        	for (int c = 0; c < newMat.cols(); ++c)
+//        	{
+//        		byte[] rgb = new byte[3];
+//        		newMat.get(r, c, rgb);
+//        		
+//        		if(rgb[0] <= minRed || rgb[0] >= maxRed){
+//        			rgb = blackPixel;
+//        		}
+//        		
+//        		if(rgb[1] <= minGreen || rgb[1] >= maxGreen){
+//        			rgb = blackPixel;
+//        		}
+//        		
+//        		if(rgb[2] <= minBlue || rgb[2] >= maxBlue){
+//        			rgb = blackPixel;
+//        		}
+//        		
+//        		newMat.put(r,c,rgb);
+//        		//If pixel color is out of range in any value, the pixel turns black
+//        		
+//        		// TODO: right here, if the rgb values for this pixel are in the range, do nothing.
+//        		//       if the rgb values for this pixel are outside the range, make the pixel black
+//        		
+//        	}
+//        }
+//        
+//         
+//		BufferedImage outputImage = MatrixUtilities.mat2Img(newMat);
+//		File outputfile = new File("C:/temp/outputImage.jpg");
+//		ImageIO.write(outputImage, "jpg", outputfile);
+//		//Mat
 	}
 
 }
