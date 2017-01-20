@@ -1,5 +1,8 @@
-package org.usfirst.frc.team5417.robot;
+package org.usfirst.frc.team5417.robot.matrixops;
 
+//
+// Used in the FilterColorOperation
+//
 public class ChannelRange {
 
 	private int lowerBound;

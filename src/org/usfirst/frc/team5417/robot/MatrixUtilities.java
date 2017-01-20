@@ -16,37 +16,8 @@ import org.opencv.imgproc.Imgproc;
 
 public class MatrixUtilities {
 
-	public static void LoadOpenCVLibraries()
-	{
-		System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME );
+	public static void LoadOpenCVLibraries() {
+		System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
 	}
-	
-	public static int[] getIntPixelValues(byte[] pixel){
-		
-		int[] rgb = new int[3];
-		
-		if(pixel[0] <0){
-			rgb[0] = pixel[0] + 256;
-		}
-		else{
-			rgb[0] = pixel[0];
-		}
-		
-		if(pixel[1] <0){
-			rgb[1] = pixel[1] + 256;
-		}
-		else{
-			rgb[1] = pixel[1];
-		}
-		
-		if(pixel[2] <0){
-			rgb[2] = pixel[2] + 256;
-		}
-		else{
-			rgb[2] = pixel[2];
-		}
-		
-		return rgb;
-	}
-	
+
 }

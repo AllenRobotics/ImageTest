@@ -13,15 +13,17 @@ import javax.imageio.ImageIO;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 
-public class FileImageReader implements ImageReader{
+//
+// Read an image from a file
+//
+public class FileImageReader implements ImageReader {
 
 	private String fileName;
-	
-	
-	public FileImageReader(String fileName){
+
+	public FileImageReader(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
 	@Override
 	public Mat read() {
 		File initialFile = new File(fileName);
@@ -32,19 +34,24 @@ public class FileImageReader implements ImageReader{
 			BufferedImage image = ImageIO.read(imageFileStream);
 
 			byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-			
+
 			int rowcount = image.getWidth();
 			int colcount = image.getHeight();
-			int type = CvType.CV_8UC3;
-			Mat newMat = new Mat(rowcount,colcount,type);
-			newMat.put(0, 0, pixels);
-		
-			return newMat; 
+			
+			// the rows/cols are swapped here intentionally
+			Mat m = new Mat(colcount, rowcount, CvType.CV_8UC3);
+			m.put(0, 0, pixels);
+
+			// the rows/cols are swapped here intentionally
+			Mat doubleMat = new Mat(colcount, rowcount, CvType.CV_32SC3);
+			m.assignTo(doubleMat, CvType.CV_32SC3);
+			
+			return doubleMat;
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			throw new IllegalArgumentException("File does not exist");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

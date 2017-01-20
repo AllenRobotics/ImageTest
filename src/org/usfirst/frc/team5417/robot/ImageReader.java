@@ -5,8 +5,5 @@ import org.opencv.core.Mat;
 public interface ImageReader {
 
 	public Mat read();
-	
-	
-	
-	
+
 }

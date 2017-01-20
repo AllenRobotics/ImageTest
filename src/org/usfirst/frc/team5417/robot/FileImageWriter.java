@@ -6,57 +6,55 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
-public class FileImageWriter implements ImageWriter{
-
+//
+// Write an image to a file
+//
+public class FileImageWriter implements ImageWriter {
 
 	private String fileName;
-	
-	
-	public FileImageWriter(String fileName){
+
+	public FileImageWriter(String fileName) {
 		this.fileName = fileName;
 	}
-	
+
 	@Override
 	public void write(Mat m) {
 		// TODO Auto-generated method stub
-		
+
 		BufferedImage outputImage = mat2Img(m);
 		File outputfile = new File(fileName);
-		
+
 		try {
-			ImageIO.write(outputImage, "jpg", outputfile);
+			ImageIO.write(outputImage, "png", outputfile);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			
+
 			throw new IllegalArgumentException("File does not exist");
 		}
-		
+
 	}
 
-	
-	public static BufferedImage mat2Img(Mat in)
-	{
-		
-		
-	    BufferedImage out;
-	    byte[] data = new byte[in.rows() * in.cols() * (int)in.elemSize()];
-	    int type;
-	    in.get(0, 0, data);
+	public static BufferedImage mat2Img(Mat in) {
 
-	    if(in.channels() == 1)
-	        type = BufferedImage.TYPE_BYTE_GRAY;
-	    else
-	        type = BufferedImage.TYPE_3BYTE_BGR;
+		BufferedImage out;
 
-	    out = new BufferedImage(in.rows(), in.cols(), type);
+		Mat byteMat = new Mat(in.rows(), in.cols(), CvType.CV_8UC3);
+		in.assignTo(byteMat, CvType.CV_8UC3);
 
-	    out.getRaster().setDataElements(0, 0, in.rows(), in.cols(), data);
-	    return out;
+		byte[] data = new byte[byteMat.rows() * byteMat.cols() * 3];
+		byteMat.get(0, 0, data);
+
+		int type = BufferedImage.TYPE_3BYTE_BGR;
+		// the rows/cols are swapped here intentionally
+		out = new BufferedImage(byteMat.cols(), byteMat.rows(), type);
+
+		out.getRaster().setDataElements(0, 0, byteMat.cols(), byteMat.rows(), data);
+		return out;
 	}
-	
-	
+
 }
