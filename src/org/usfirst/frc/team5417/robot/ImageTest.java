@@ -44,9 +44,9 @@ public class ImageTest {
 	      operations.add(new ReversePixelChannelsOperation());
 	      operations.add(
 	    		  new FilterColorOperation(
-	    				  new ChannelRange(50, 100),
-	    				  new ChannelRange(170, 210),
-	    				  new ChannelRange(80, 120))
+	    				  new ChannelRange(30, 150),
+	    				  new ChannelRange(100, 210),
+	    				  new ChannelRange(40, 170))
 	    		  );
 	      operations.add(new ThresholdAboveOperation());
 	      operations.add(new FindGroupsOperation());
@@ -56,16 +56,16 @@ public class ImageTest {
 	      for(MatrixOperation op : operations){
 	    	  m = op.doOperation(m);
 	    	  
-	    	  ImageWriter operationWriter = new FileImageWriter("C:/temp/operation-step-" + operationNumber + ".jpg");
+	    	  ImageWriter operationWriter = new FileImageWriter("C:/temp/operation-step-" + operationNumber + ".png");
 	    	  operationWriter.write(m);
 	    	  
 	    	  operationNumber++;
 	      }
 	       
-	      ImageWriter writer = new FileImageWriter("C:/temp/outputImage.jpg");
+	      ImageWriter writer = new FileImageWriter("C:/temp/outputImage.png");
 	      writer.write(m);
 	      
-	      ImageWriter originalImageWriter = new FileImageWriter("C:/temp/OrigianlImage.jpg");
+	      ImageWriter originalImageWriter = new FileImageWriter("C:/temp/OrigianlImage.png");
 	      originalImageWriter.write(originalMat);
 	      
 //       // Mat newMat = MatrixUtilities.readMatFromFile("C:/temp/sampleimage.jpg");
