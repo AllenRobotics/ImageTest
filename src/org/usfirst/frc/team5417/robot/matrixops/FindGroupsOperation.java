@@ -23,7 +23,7 @@ public class FindGroupsOperation implements MatrixOperation {
 	private HashSet<Pixel> usedColors = new HashSet<>();
 	
 	private boolean isCloseToBlack(Pixel color) {
-		return color.r < 50 && color.g < 50 && color.b < 50;
+		return color.r < 100 && color.g < 100 && color.b < 100;
 	}
 	
 	private boolean hasBeenUsedBefore(Pixel color) {
@@ -38,6 +38,14 @@ public class FindGroupsOperation implements MatrixOperation {
 			newColor.r = random.nextInt() % 256;
 			newColor.g = random.nextInt() % 256;
 			newColor.b = random.nextInt() % 256;
+			
+			// force the color to not be close to black so we don't spin in this while loop
+			// and wait for a color to randomly be generated that's not close to black.
+			if (isCloseToBlack(newColor)) {
+				if (newColor.r < 100) newColor.r += 150;
+				if (newColor.g < 100) newColor.g += 150;
+				if (newColor.b < 100) newColor.b += 150;
+			}
 		}
 
 		usedColors.add(newColor);
