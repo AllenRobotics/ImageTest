@@ -87,9 +87,6 @@ public class FindGroupsOperation implements MatrixOperation {
 				// identifying groups
 				if (currentNode != null) {
 					DisjointSetNode[] adjacentNodes = getAdjacentNodes(r, c, m.rows(), m.cols(), nodeGroups, 3);
-					if (adjacentNodes.length == 8) {
-						System.out.println("Found 8!");
-					}
 					for (DisjointSetNode node : adjacentNodes) {
 						Union(currentNode, node);
 					}
@@ -138,10 +135,6 @@ public class FindGroupsOperation implements MatrixOperation {
 					}
 				}
 			}
-		}
-
-		if (adjacentNodes.size() == 8) {
-			System.out.println("Found 8!");
 		}
 
 		DisjointSetNode[] result = new DisjointSetNode[adjacentNodes.size()];
