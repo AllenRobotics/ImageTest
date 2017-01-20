@@ -54,10 +54,22 @@ public class FindGroupsOperation implements MatrixOperation {
 	}
 	
 	public class DisjointSetNode {
+		// this is private so that we're forced to call getOrGenerateColor
+		private Pixel rgb;
+		
 		public DisjointSetNode parent;
 		public int rank;
-
-		public Pixel rgb;
+	
+		// we should only call this function when we're creating the
+		// output image. it's much faster to generate one color for
+		// each group than to generate one color for each pixel. that's
+		// why we took the generateNewColor call out of MakeSet().
+		public Pixel getOrGenerateColor() {
+			if (this.rgb == null) {
+				this.rgb = generateNewColor();
+			}
+			return this.rgb;
+		}
 	}
 
 	public boolean isBlackPixel(Pixel gray) {
@@ -109,11 +121,13 @@ public class FindGroupsOperation implements MatrixOperation {
 
 				DisjointSetNode currentNode = (DisjointSetNode) nodeGroups.get(r, c);
 
+				// generating the color coded output image by using a
+				// new color for each group.
 				if (currentNode == null) {
 					result.put(r, c, blackPixel);
 				} else {
 					DisjointSetNode root = Find(currentNode);
-					result.put(r, c, root.rgb);
+					result.put(r, c, root.getOrGenerateColor());
 				}
 			}
 		}
@@ -163,8 +177,6 @@ public class FindGroupsOperation implements MatrixOperation {
 		DisjointSetNode newNode = new DisjointSetNode();
 		newNode.parent = newNode;
 		newNode.rank = 0;
-
-		newNode.rgb = generateNewColor();
 
 		return newNode;
 	}
