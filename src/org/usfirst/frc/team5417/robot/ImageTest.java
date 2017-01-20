@@ -48,6 +48,8 @@ public class ImageTest {
 	    				  new ChannelRange(170, 210),
 	    				  new ChannelRange(80, 120))
 	    		  );
+	      operations.add(new ThresholdAboveOperation());
+	      operations.add(new FindGroupsOperation());
 
 	      int operationNumber = 1;
 	      
