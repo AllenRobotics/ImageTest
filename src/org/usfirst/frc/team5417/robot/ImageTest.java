@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 
@@ -34,19 +36,35 @@ public class ImageTest {
 	    //Calls Open CV library
 	   
 	      ImageReader reader = new FileImageReader("C:/temp/sampleimage.jpg");
-	      Mat newMat = reader.read();
+	      Mat originalMat = reader.read();
+	      Mat m = reader.read();
 	      
-	      MatrixOperation filterColors = new FilterColorOperation(
-	    		  new ChannelRange(90, 120),
-	    		  new ChannelRange(110, 150),
-	    		  new ChannelRange(130, 180));
-	      Mat filteredMat = filterColors.doOperation(newMat);
+	      List<MatrixOperation> operations = new ArrayList<MatrixOperation>();
 	      
+	      operations.add(new ReversePixelChannelsOperation());
+	      operations.add(
+	    		  new FilterColorOperation(
+	    				  new ChannelRange(50, 100),
+	    				  new ChannelRange(170, 210),
+	    				  new ChannelRange(80, 120))
+	    		  );
+
+	      int operationNumber = 1;
+	      
+	      for(MatrixOperation op : operations){
+	    	  m = op.doOperation(m);
+	    	  
+	    	  ImageWriter operationWriter = new FileImageWriter("C:/temp/operation-step-" + operationNumber + ".jpg");
+	    	  operationWriter.write(m);
+	    	  
+	    	  operationNumber++;
+	      }
+	       
 	      ImageWriter writer = new FileImageWriter("C:/temp/outputImage.jpg");
-	      writer.write(filteredMat);
+	      writer.write(m);
 	      
 	      ImageWriter originalImageWriter = new FileImageWriter("C:/temp/OrigianlImage.jpg");
-	      originalImageWriter.write(newMat);
+	      originalImageWriter.write(originalMat);
 	      
 //       // Mat newMat = MatrixUtilities.readMatFromFile("C:/temp/sampleimage.jpg");
 //          

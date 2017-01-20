@@ -40,7 +40,7 @@ public class FileImageWriter implements ImageWriter{
 	
 	public static BufferedImage mat2Img(Mat in)
 	{
-		in = BGR2RGB(in);
+		
 		
 	    BufferedImage out;
 	    byte[] data = new byte[in.rows() * in.cols() * (int)in.elemSize()];
@@ -58,10 +58,5 @@ public class FileImageWriter implements ImageWriter{
 	    return out;
 	}
 	
-	private static Mat BGR2RGB(Mat m)
-	{
-		Mat m2 = new Mat();
-        Imgproc.cvtColor(m, m2, Imgproc.COLOR_BGR2RGB);
-        return m2;
-    }
+	
 }
