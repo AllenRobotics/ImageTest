@@ -74,7 +74,7 @@ public class FindGroupsOperation implements MatrixOperation {
 				if (nodeGroups[r][c] == null) {
 					result.put(r, c, blackPixel);
 				} else {
-					DisjointSetNode root = Find(nodeGroups[r][c]);
+					DisjointSetNode root = GetRoot(nodeGroups[r][c]);
 					result.put(r, c, root.rgb);
 				}
 
@@ -135,9 +135,9 @@ public class FindGroupsOperation implements MatrixOperation {
 
 		// NOTE: we *might* generate the same color accidentally
 		// TODO: fixme
-		newNode.rgb[0] = (byte) ((random.nextInt() % 150) + 155);
-		newNode.rgb[1] = (byte) ((random.nextInt() % 150) + 155);
-		newNode.rgb[2] = (byte) ((random.nextInt() % 150) + 155);
+		newNode.rgb[0] = (byte) ((random.nextInt() % 120) - 120);
+		newNode.rgb[1] = (byte) ((random.nextInt() % 120) - 120);
+		newNode.rgb[2] = (byte) ((random.nextInt() % 120) - 120);
 		return newNode;
 	}
 
@@ -146,7 +146,14 @@ public class FindGroupsOperation implements MatrixOperation {
 			x.parent = Find(x.parent);
 		}
 		return x.parent;
-
+	}
+	
+	private DisjointSetNode GetRoot(DisjointSetNode x)
+	{
+		while (x.parent != x) {
+			x = x.parent;
+		}
+		return x;
 	}
 
 	private void Union(DisjointSetNode x, DisjointSetNode y) {

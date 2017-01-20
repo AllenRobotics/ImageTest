@@ -34,7 +34,7 @@ public class FilterColorOperation implements MatrixOperation {
         		byte[] pixel = new byte[3];
         		m.get(r, c, pixel);
         		
-        		int[] rgb = getIntPixelValues(pixel);
+        		int[] rgb = MatrixUtilities.getIntPixelValues(pixel);
         		
         		if(rgb[0] <= minRed || rgb[0] >= maxRed){
         			pixel = blackPixel;
@@ -59,35 +59,6 @@ public class FilterColorOperation implements MatrixOperation {
 	
         return newM;
 	        
-	}
-
-	
-	public int[] getIntPixelValues(byte[] pixel){
-		
-		int[] rgb = new int[3];
-		
-		if(pixel[0] <0){
-			rgb[0] = pixel[0] + 256;
-		}
-		else{
-			rgb[0] = pixel[0];
-		}
-		
-		if(pixel[1] <0){
-			rgb[1] = pixel[1] + 256;
-		}
-		else{
-			rgb[1] = pixel[1];
-		}
-		
-		if(pixel[2] <0){
-			rgb[2] = pixel[2] + 256;
-		}
-		else{
-			rgb[2] = pixel[2];
-		}
-		
-		return rgb;
 	}
 	
 }

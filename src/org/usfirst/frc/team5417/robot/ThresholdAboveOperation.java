@@ -16,9 +16,11 @@ public class ThresholdAboveOperation implements MatrixOperation {
 		{
 			for (int c = 0; c < m.cols(); ++c)
 			{
-				byte[] rgb = new byte[3];
+				byte[] pixel = new byte[3];
 				
-				m.get(r, c, rgb);
+				m.get(r, c, pixel);
+				
+        		int[] rgb = MatrixUtilities.getIntPixelValues(pixel);
 				
 				if (rgb[0] > 50 || rgb[1] > 50 || rgb[2] > 50) {
 					result.put(r,  c, whitePixel);
