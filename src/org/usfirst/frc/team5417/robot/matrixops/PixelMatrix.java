@@ -73,30 +73,15 @@ public class PixelMatrix {
 		return colCount;
 	}
 
-	public Mat toColorMat() {
+	public Mat toMat() {
 		Mat m = new Mat(rows(), cols(), CvType.CV_32SC3);
 
 		for (int r = 0; r < rows(); r++) {
 			for (int c = 0; c < cols(); c++) {
 				Pixel pixel = this.get(r, c);
 
-				double[] bgr = { pixel.b, pixel.g, pixel.r };
+				double[] bgr = { pixel.r, pixel.g, pixel.b };
 				m.put(r, c, bgr);
-			}
-		}
-
-		return m;
-	}
-
-	public Mat toGrayMat() {
-		Mat m = new Mat(rows(), cols(), CvType.CV_32SC3);
-
-		for (int r = 0; r < rows(); r++) {
-			for (int c = 0; c < cols(); c++) {
-				Pixel pixel = this.get(r, c);
-
-				double[] rgb = { pixel.r, pixel.r, pixel.r };
-				m.put(r, c, rgb);
 			}
 		}
 

@@ -20,7 +20,7 @@ public class ImageTest {
 		//m = MatrixUtilities.reverseColorChannels(m);
 		PixelMatrix pixelMatrix = new PixelMatrix(m);
 		
-		Mat originalMat = pixelMatrix.toColorMat();
+		Mat originalMat = pixelMatrix.toMat();
 		ImageWriter originalWriter = new FileImageWriter("C:/temp/originalImage.png");
 		originalWriter.write(originalMat);
 		
@@ -40,11 +40,11 @@ public class ImageTest {
 
 		int operationNumber = 1;
 
-		Mat tempM = pixelMatrix.toColorMat();
+		Mat tempM = pixelMatrix.toMat();
 		for (MatrixOperation op : operations) {
 			pixelMatrix = op.doOperation(pixelMatrix);
 
-			tempM = pixelMatrix.toColorMat();
+			tempM = pixelMatrix.toMat();
 			ImageWriter operationWriter = new FileImageWriter("C:/temp/operation-step-" + operationNumber + ".bmp");
 			operationWriter.write(tempM);
 
