@@ -80,7 +80,7 @@ public class PixelMatrix {
 			for (int c = 0; c < cols(); c++) {
 				Pixel pixel = this.get(r, c);
 
-				double[] bgr = { pixel.r, pixel.g, pixel.b };
+				double[] bgr = { pixel.r(), pixel.g(), pixel.b() };
 				m.put(r, c, bgr);
 			}
 		}

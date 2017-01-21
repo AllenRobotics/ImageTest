@@ -26,9 +26,9 @@ public class ThresholdAboveOperation implements MatrixOperation {
 
 		for (int r = 0; r < m.rows(); ++r) {
 			for (int c = 0; c < m.cols(); ++c) {
-				Pixel gray = m.get(r, c);
+				Pixel pixel = m.get(r, c);
 
-				if (gray.r >= this.threshold) {
+				if (pixel.gray() >= this.threshold) {
 					result.put(r, c, whitePixel);
 				} else {
 					result.put(r, c, blackPixel);

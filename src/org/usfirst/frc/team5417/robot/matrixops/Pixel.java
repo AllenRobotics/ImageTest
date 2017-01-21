@@ -10,9 +10,9 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //
 public class Pixel {
 
-	public int r;
-	public int g;
-	public int b;
+	private int _r;
+	private int _g;
+	private int _b;
 	
 	private boolean isGray = false;
 
@@ -29,17 +29,49 @@ public class Pixel {
 	}
 	
 	public Pixel(Pixel other) {
-		this.r = other.r;
-		this.g = other.g;
-		this.b = other.b;
+		this._r = other._r;
+		this._g = other._g;
+		this._b = other._b;
 		isGray = other.isGray;
 	}
 
+	public int gray() {
+		if (isGray) {
+			return _r;
+		}
+		else {
+			//
+			// see https://en.wikipedia.org/wiki/Grayscale for grayscale conversion formula
+			//
+			return (int)(0.299 * _r + 0.587 * _g + 0.114 * _b);
+		}
+	}
+	
+	public int r() {
+		return _r;
+	}
+	public int g() {
+		return _g;
+	}
+	public int b() {
+		return _b;
+	}
+	
+	public Pixel addToR(int value) {
+		return new Pixel(_r + value, _g, _b);
+	}
+	public Pixel addToG(int value) {
+		return new Pixel(_r, _g + value, _b);
+	}
+	public Pixel addToB(int value) {
+		return new Pixel(_r, _g, _b + value);
+	}
+	
 	// please leave this private
 	private void put(int r, int g, int b) {
-		this.r = r;
-		this.g = g;
-		this.b = b;
+		this._r = r;
+		this._g = g;
+		this._b = b;
 		isGray = false;
 	}
 
@@ -55,9 +87,9 @@ public class Pixel {
 
 	// please leave this private
 	private void putGray(int gray) {
-		this.r = gray;
-		this.g = gray;
-		this.b = gray;
+		this._r = gray;
+		this._g = gray;
+		this._b = gray;
 		isGray = true;
 	}
 	
@@ -69,9 +101,9 @@ public class Pixel {
 	@Override
 	public int hashCode() {
 		return (int)
-				(this.r ^ 3
-				+ this.g ^ 13
-				+ this.b ^ 29);
+				(this._r ^ 3
+				+ this._g ^ 13
+				+ this._b ^ 29);
 	}
 	
 	@Override
@@ -80,9 +112,9 @@ public class Pixel {
 		if (false == Pixel.class.isAssignableFrom(o.getClass())) return false;
 		
 		final Pixel other = (Pixel)o;
-		return this.r == other.r
-				&& this.g == other.g
-				&& this.b == other.b;
+		return this._r == other._r
+				&& this._g == other._g
+				&& this._b == other._b;
 	}
 
 }

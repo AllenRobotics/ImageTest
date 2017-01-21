@@ -36,11 +36,11 @@ public class FilterColorOperation implements MatrixOperation {
 
 				// If pixel color is out of range in any value,
 				// the pixel turns black
-				if (rgb.r < minRed || rgb.r > maxRed) {
+				if (rgb.r() < minRed || rgb.r() > maxRed) {
 					result.put(r, c, blackPixel);
-				} else if (rgb.g < minGreen || rgb.g > maxGreen) {
+				} else if (rgb.g() < minGreen || rgb.g() > maxGreen) {
 					result.put(r, c, blackPixel);
-				} else if (rgb.b < minBlue || rgb.b > maxBlue) {
+				} else if (rgb.b() < minBlue || rgb.b() > maxBlue) {
 					result.put(r, c, blackPixel);
 				} else {
 					// if the rgb values for this pixel are in the
