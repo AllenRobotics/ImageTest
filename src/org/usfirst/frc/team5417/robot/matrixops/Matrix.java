@@ -5,7 +5,7 @@ package org.usfirst.frc.team5417.robot.matrixops;
 //
 public class Matrix {
 	private Object[][] items;
-	
+
 	private int rowCount;
 	private int colCount;
 
@@ -16,11 +16,24 @@ public class Matrix {
 		items = new Object[rows][];
 		for (int r = 0; r < rows; r++) {
 			items[r] = new Object[cols];
-			
+
 			for (int c = 0; c < cols; c++) {
 				items[r][c] = defaultValue;
 			}
 		}
+	}
+
+	public Matrix scale(double scaleFactor) {
+		int newRows;
+		int newCols;
+
+		newRows = (int) (this.rows() * scaleFactor);
+		newCols = (int) (this.cols() * scaleFactor);
+
+		Matrix scaledMatrix = new Matrix(newRows, newCols, 1);
+
+		return scaledMatrix;
+
 	}
 
 	public void put(int r, int c, Object item) {

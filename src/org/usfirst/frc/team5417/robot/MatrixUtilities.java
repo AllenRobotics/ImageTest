@@ -59,6 +59,15 @@ public class MatrixUtilities {
 	public static boolean isInImage(int r, int c, int rows, int cols) {
 		return r >= 0 && c >= 0 && r < rows && c < cols;
 	}
+	
+	public static Matrix getRectangleKernel(int regionWidth, int regionHeight) {
+
+		Matrix square = new Matrix(regionWidth, regionHeight, 1);
+
+		return square;
+	}
+
+	
 
 	public static Point[] getAdjacentPoints(int r, int c, PixelMatrix image, Matrix kernel, Color onlyMatchColor) {
 
@@ -105,5 +114,7 @@ public class MatrixUtilities {
 			return false;
 		}
 	}
+	
+	
 
 }
