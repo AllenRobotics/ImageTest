@@ -35,8 +35,14 @@ public class ImageTest {
 		operations.add(new GrayScaleOperation());
 		// threshold above some pixel value (operates on gray scale)
 		operations.add(new ThresholdAboveOperation(50));
+		//
+		operations.add(new DilationOperation(11));
+		//
+		operations.add(new ErosionOperation(11));
 		// find groups (operates on gray scale, outputs color)
 		operations.add(new FindGroupsOperation());
+		//
+		operations.add(new RemoveSmallGroupsOperation(100));
 
 		int operationNumber = 1;
 
