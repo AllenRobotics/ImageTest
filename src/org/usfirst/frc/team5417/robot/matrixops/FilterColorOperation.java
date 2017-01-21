@@ -32,20 +32,20 @@ public class FilterColorOperation implements MatrixOperation {
 
 		for (int r = 0; r < m.rows(); ++r) {
 			for (int c = 0; c < m.cols(); ++c) {
-				Pixel rgb = m.get(r, c);
+				Pixel pixel = m.get(r, c);
 
 				// If pixel color is out of range in any value,
 				// the pixel turns black
-				if (rgb.r() < minRed || rgb.r() > maxRed) {
+				if (pixel.r < minRed || pixel.r > maxRed) {
 					result.put(r, c, blackPixel);
-				} else if (rgb.g() < minGreen || rgb.g() > maxGreen) {
+				} else if (pixel.g < minGreen || pixel.g > maxGreen) {
 					result.put(r, c, blackPixel);
-				} else if (rgb.b() < minBlue || rgb.b() > maxBlue) {
+				} else if (pixel.b < minBlue || pixel.b > maxBlue) {
 					result.put(r, c, blackPixel);
 				} else {
 					// if the rgb values for this pixel are in the
 					// range, pass it through
-					result.put(r, c, rgb);
+					result.put(r, c, pixel);
 				}
 			}
 		}

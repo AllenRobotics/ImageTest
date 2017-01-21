@@ -5,14 +5,16 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //
 // A pixel, either rgb or grayscale. If grayscale, just use any of the r/g/b member variables.
 //
-// NOTE: Pixels are immutable. Immutability is an important characteristic
-//       since a Pixel can be used in a hash-based data structure. 
+// NOTE: Pixels are mutable. That means they should not be used
+//       with hash-based data structure. They have been left mutable
+//       for speed. It can be expensive to create a lot of tiny objects
+//       in memory.
 //
 public class Pixel {
 
-	private int _r;
-	private int _g;
-	private int _b;
+	public int r;
+	public int g;
+	public int b;
 	
 	private boolean isGray = false;
 
@@ -29,54 +31,32 @@ public class Pixel {
 	}
 	
 	public Pixel(Pixel other) {
-		this._r = other._r;
-		this._g = other._g;
-		this._b = other._b;
-		isGray = other.isGray;
+		this.r = other.r;
+		this.g = other.g;
+		this.b = other.b;
+		this.isGray = other.isGray;
 	}
 
 	public int gray() {
 		if (isGray) {
-			return _r;
+			return r;
 		}
 		else {
 			//
 			// see https://en.wikipedia.org/wiki/Grayscale for grayscale conversion formula
 			//
-			return (int)(0.299 * _r + 0.587 * _g + 0.114 * _b);
+			return (int)(0.299 * r + 0.587 * g + 0.114 * b);
 		}
 	}
 	
-	public int r() {
-		return _r;
-	}
-	public int g() {
-		return _g;
-	}
-	public int b() {
-		return _b;
-	}
-	
-	public Pixel addToR(int value) {
-		return new Pixel(_r + value, _g, _b);
-	}
-	public Pixel addToG(int value) {
-		return new Pixel(_r, _g + value, _b);
-	}
-	public Pixel addToB(int value) {
-		return new Pixel(_r, _g, _b + value);
-	}
-	
-	// please leave this private
-	private void put(int r, int g, int b) {
-		this._r = r;
-		this._g = g;
-		this._b = b;
-		isGray = false;
+	public void put(int r, int g, int b) {
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.isGray = false;
 	}
 
-	// please leave this private
-	private void put(double[] channels) {
+	public void put(double[] channels) {
 		if (channels.length == 3) {
 			put((int)channels[0], (int)channels[1], (int)channels[2]);
 		}
@@ -85,36 +65,23 @@ public class Pixel {
 		}
 	}
 
-	// please leave this private
-	private void putGray(int gray) {
-		this._r = gray;
-		this._g = gray;
-		this._b = gray;
-		isGray = true;
+	public void put(double gray) {
+		putGray((int)gray);
 	}
 	
-	// these functions:
-	//   public int hashCode()
-	//   public boolean equals(Object other)
-	// are so that we can use a Pixel as a key in HashSet or HashMap
-	
-	@Override
-	public int hashCode() {
-		return (int)
-				(this._r ^ 3
-				+ this._g ^ 13
-				+ this._b ^ 29);
-	}
-	
-	@Override
-	public boolean equals(Object o) {
-		if (o == null) return false;
-		if (false == Pixel.class.isAssignableFrom(o.getClass())) return false;
-		
-		final Pixel other = (Pixel)o;
-		return this._r == other._r
-				&& this._g == other._g
-				&& this._b == other._b;
+	public void put(Pixel other) {
+		this.r = other.r;
+		this.g = other.g;
+		this.b = other.b;
+		this.isGray = other.isGray;
 	}
 
+	// please leave this private
+	private void putGray(int gray) {
+		this.r = gray;
+		this.g = gray;
+		this.b = gray;
+		this.isGray = true;
+	}
+	
 }

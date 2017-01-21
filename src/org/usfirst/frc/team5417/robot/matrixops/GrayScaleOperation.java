@@ -19,8 +19,7 @@ public class GrayScaleOperation implements MatrixOperation {
 				//
 				// see https://en.wikipedia.org/wiki/Grayscale for grayscale conversion formula
 				//
-				Pixel grayPixel = new Pixel(colorPixel.gray());
-				m2.put(r, c, grayPixel);
+				m2.put(r, c, colorPixel.gray());
 			}
 		}
 		return m2;

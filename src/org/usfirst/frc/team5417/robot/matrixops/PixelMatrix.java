@@ -53,12 +53,16 @@ public class PixelMatrix {
 		}
 	}
 
-	public void put(int r, int c, double[] pixel) {
-		pixels[r][c] = new Pixel(pixel);
+	public void put(int r, int c, double[] channels) {
+		this.get(r, c).put(channels);
 	}
 	
+	public void put(int r, int c, double gray) {
+		this.get(r, c).put(gray);
+	}
+
 	public void put(int r, int c, Pixel pixel) {
-		pixels[r][c] = new Pixel(pixel);
+		this.get(r, c).put(pixel);
 	}
 
 	public Pixel get(int r, int c) {
@@ -80,7 +84,7 @@ public class PixelMatrix {
 			for (int c = 0; c < cols(); c++) {
 				Pixel pixel = this.get(r, c);
 
-				double[] bgr = { pixel.r(), pixel.g(), pixel.b() };
+				double[] bgr = { pixel.r, pixel.g, pixel.b };
 				m.put(r, c, bgr);
 			}
 		}

@@ -20,36 +20,36 @@ import org.opencv.core.Mat;
 public class FindGroupsOperation implements MatrixOperation {
 
 	private SecureRandom random = new SecureRandom();
-	private HashSet<Pixel> usedColors = new HashSet<>();
+	private HashSet<Color> usedColors = new HashSet<>();
 	
 	private boolean isCloseToBlack(Pixel color) {
-		return color.r() < 100 && color.g() < 100 && color.b() < 100;
+		return color.r < 100 && color.g < 100 && color.b < 100;
 	}
 	
 	private boolean hasBeenUsedBefore(Pixel color) {
-		return usedColors.contains(color);
+		return usedColors.contains(new Color(color));
 	}
 	
 	private Pixel generateNewColor() {
+		// we use a mutable pixel here for speed, only creating Color objects as needed
 		Pixel newColor = new Pixel(0, 0, 0);
 		
 		while (isCloseToBlack(newColor) || hasBeenUsedBefore(newColor))
 		{
-			newColor = new Pixel(
-					random.nextInt() % 256,
-					random.nextInt() % 256,
-					random.nextInt() % 256);
+			newColor.r = random.nextInt() % 256;
+			newColor.g = random.nextInt() % 256;
+			newColor.b = random.nextInt() % 256;
 			
 			// force the color to not be close to black so we don't spin in this while loop
 			// and wait for a color to randomly be generated that's not close to black.
 			if (isCloseToBlack(newColor)) {
-				if (newColor.r() < 100) newColor = newColor.addToR(150);
-				if (newColor.g() < 100) newColor = newColor.addToG(150);
-				if (newColor.b() < 100) newColor = newColor.addToB(150);
+				if (newColor.r < 100) newColor.r += 150;
+				if (newColor.g < 100) newColor.g += 150;
+				if (newColor.b < 100) newColor.b += 150;
 			}
 		}
 
-		usedColors.add(newColor);
+		usedColors.add(new Color(newColor));
 		
 		return newColor;
 	}
