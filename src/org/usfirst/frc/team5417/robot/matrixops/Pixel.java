@@ -5,6 +5,9 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //
 // A pixel, either rgb or grayscale. If grayscale, just use any of the r/g/b member variables.
 //
+// NOTE: Pixels are immutable. Immutability is an important characteristic
+//       since a Pixel can be used in a hash-based data structure. 
+//
 public class Pixel {
 
 	public int r;
@@ -20,6 +23,10 @@ public class Pixel {
 	public Pixel(int gray) {
 		putGray(gray);
 	}
+
+	public Pixel(double[] channels) {
+		put(channels);
+	}
 	
 	public Pixel(Pixel other) {
 		this.r = other.r;
@@ -28,14 +35,16 @@ public class Pixel {
 		isGray = other.isGray;
 	}
 
-	public void put(int r, int g, int b) {
+	// please leave this private
+	private void put(int r, int g, int b) {
 		this.r = r;
 		this.g = g;
 		this.b = b;
 		isGray = false;
 	}
 
-	public void put(double[] channels) {
+	// please leave this private
+	private void put(double[] channels) {
 		if (channels.length == 3) {
 			put((int)channels[0], (int)channels[1], (int)channels[2]);
 		}
@@ -44,7 +53,8 @@ public class Pixel {
 		}
 	}
 
-	public void putGray(int gray) {
+	// please leave this private
+	private void putGray(int gray) {
 		this.r = gray;
 		this.g = gray;
 		this.b = gray;

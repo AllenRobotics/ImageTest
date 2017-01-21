@@ -54,7 +54,7 @@ public class PixelMatrix {
 	}
 
 	public void put(int r, int c, double[] pixel) {
-		this.get(r, c).put(pixel);
+		pixels[r][c] = new Pixel(pixel);
 	}
 	
 	public void put(int r, int c, Pixel pixel) {
