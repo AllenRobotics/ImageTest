@@ -5,6 +5,11 @@ import java.util.HashSet;
 
 import org.usfirst.frc.team5417.robot.MatrixUtilities;
 
+//
+//Removes small groups from the image
+//Input: a color image, where each group is a unique color
+//Output: a color image, where small groups of color have been removed
+//
 public class RemoveSmallGroupsOperation implements MatrixOperation {
 
 	private int minimumGroupPixelCount;
@@ -15,9 +20,6 @@ public class RemoveSmallGroupsOperation implements MatrixOperation {
 
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
-		// TODO Auto-generated method stub
-
-		HashMap<Color, Integer> groupsToCount = new HashMap<>();
 
 		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
 
@@ -27,18 +29,10 @@ public class RemoveSmallGroupsOperation implements MatrixOperation {
 				Pixel pixel = m.get(r, c);
 				result.put(r, c, pixel);
 
-				if (!MatrixUtilities.isBlackPixel(pixel)) {
-					Color color = new Color(pixel);
-					if (groupsToCount.containsKey(color)) {
-						Integer count = groupsToCount.get(color);
-						groupsToCount.put(color, count + 1);
-					} else {
-						groupsToCount.put(color, 1);
-					}
-				}
 			}
 		}
 
+		HashMap<Color, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
 		HashSet<Color> colorsToRemove = new HashSet<>();
 
 		for (Color color : groupsToCount.keySet()) {

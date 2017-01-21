@@ -6,6 +6,11 @@ import java.util.List;
 
 import org.usfirst.frc.team5417.robot.MatrixUtilities;
 
+//
+//Erodes the white pixels in an image, given a kernel size
+//Input: a binarized image (black and white)
+//Output: a binarized image, with the white regions eroded
+//
 public class ErosionOperation implements MatrixOperation{
 
 	private int regionWidth;
@@ -18,13 +23,12 @@ public class ErosionOperation implements MatrixOperation{
 	
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
-		// TODO Auto-generated method stub
-		
+
 		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
 
 		HashSet<Point> pointsToTurnBlack = new HashSet<>();
 
-		Matrix kernel = MatrixUtilities.getDiamondKernel(regionWidth);
+		Matrix kernel = MatrixUtilities.getSquareKernel(regionWidth);
 		Color whitePixel = new Color(255, 255, 255);
 		
 		for (int r = 0; r < m.rows(); r++) {

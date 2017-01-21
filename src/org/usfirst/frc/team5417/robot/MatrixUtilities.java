@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -115,6 +116,28 @@ public class MatrixUtilities {
 		}
 	}
 	
-	
+	public static HashMap<Color, Integer> getGroupSizes(PixelMatrix m) {
+		
+		HashMap<Color, Integer> groupsToCount = new HashMap<>();
+		
+		for (int r = 0; r < m.rows(); r++) {
+			for (int c = 0; c < m.cols(); c++) {
+
+				Pixel pixel = m.get(r, c);
+
+				if (!MatrixUtilities.isBlackPixel(pixel)) {
+					Color color = new Color(pixel);
+					if (groupsToCount.containsKey(color)) {
+						Integer count = groupsToCount.get(color);
+						groupsToCount.put(color, count + 1);
+					} else {
+						groupsToCount.put(color, 1);
+					}
+				}
+			}
+		}
+		
+		return groupsToCount;
+	}
 
 }

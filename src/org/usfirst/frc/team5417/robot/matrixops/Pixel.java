@@ -31,10 +31,7 @@ public class Pixel {
 	}
 	
 	public Pixel(Pixel other) {
-		this.r = other.r;
-		this.g = other.g;
-		this.b = other.b;
-		this.isGray = other.isGray;
+		put(other);
 	}
 
 	public int gray() {
@@ -50,6 +47,9 @@ public class Pixel {
 	}
 	
 	public void put(int r, int g, int b) {
+//		if (r < 0 || g < 0 || b < 0) {
+//			System.out.println("Oh no!");
+//		}
 		this.r = r;
 		this.g = g;
 		this.b = b;
@@ -70,14 +70,15 @@ public class Pixel {
 	}
 	
 	public void put(Pixel other) {
-		this.r = other.r;
-		this.g = other.g;
-		this.b = other.b;
+		put(other.r, other.g, other.b);
 		this.isGray = other.isGray;
 	}
 
 	// please leave this private
 	private void putGray(int gray) {
+//		if (r < 0 || g < 0 || b < 0) {
+//			System.out.println("Oh no!");
+//		}
 		this.r = gray;
 		this.g = gray;
 		this.b = gray;

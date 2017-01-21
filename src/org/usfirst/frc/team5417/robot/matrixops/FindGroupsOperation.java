@@ -40,6 +40,10 @@ public class FindGroupsOperation implements MatrixOperation {
 			newColor.g = random.nextInt() % 256;
 			newColor.b = random.nextInt() % 256;
 			
+			while (newColor.r < 0) newColor.r += 256;
+			while (newColor.g < 0) newColor.g += 256;
+			while (newColor.b < 0) newColor.b += 256;
+			
 			// force the color to not be close to black so we don't spin in this while loop
 			// and wait for a color to randomly be generated that's not close to black.
 			if (isCloseToBlack(newColor)) {

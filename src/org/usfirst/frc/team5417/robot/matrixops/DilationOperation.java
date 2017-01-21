@@ -7,6 +7,11 @@ import java.util.List;
 import org.usfirst.frc.team5417.robot.MatrixUtilities;
 import org.usfirst.frc.team5417.robot.matrixops.FindGroupsOperation.DisjointSetNode;
 
+//
+//Dilates the white pixels in an image, given a kernel size
+//Input: a binarized image (black and white)
+//Output: a binarized image, with the white regions dilated
+//
 public class DilationOperation implements MatrixOperation {
 
 	private int regionWidth;
@@ -16,7 +21,6 @@ public class DilationOperation implements MatrixOperation {
 
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
-		// TODO Auto-generated method stub
 
 		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
 

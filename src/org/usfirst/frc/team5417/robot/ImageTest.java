@@ -26,6 +26,14 @@ public class ImageTest {
 		
 		List<MatrixOperation> operations = new ArrayList<MatrixOperation>();
 
+		List<Matrix> horizontalTemplates = new ArrayList<Matrix>();
+		horizontalTemplates.add(new Matrix(40, 150, 1));
+		horizontalTemplates.add(new Matrix(20, 150, 1));
+
+		List<Matrix> verticalTemplates = new ArrayList<Matrix>();
+		verticalTemplates.add(new Matrix(150, 40, 1));
+		verticalTemplates.add(new Matrix(150, 20, 1));
+
 		// filter colors
 		operations.add(new FilterColorOperation(
 				new ChannelRange(10, 60),
@@ -35,14 +43,16 @@ public class ImageTest {
 		operations.add(new GrayScaleOperation());
 		// threshold above some pixel value (operates on gray scale)
 		operations.add(new ThresholdAboveOperation(50));
-		//
+		// dilate the white areas in the image to "heal" broken lines
 		operations.add(new DilationOperation(11));
-		//
+		// erode the white areas in the image (sort of undoes the dilation, but keeps "healed" lines)
 		operations.add(new ErosionOperation(11));
 		// find groups (operates on gray scale, outputs color)
 		operations.add(new FindGroupsOperation());
-		//
+		// remove all groups with too few pixels
 		operations.add(new RemoveSmallGroupsOperation(100));
+		// remove all groups that don't match a template
+		operations.add(new MatchTemplateOperation(verticalTemplates, 0.25, 4, 0.7));
 
 		int operationNumber = 1;
 
@@ -57,6 +67,7 @@ public class ImageTest {
 			operationNumber++;
 		}
 
+		tempM = pixelMatrix.toMat();
 		ImageWriter writer = new FileImageWriter("C:/temp/outputImage.png");
 		writer.write(tempM);
 	}
