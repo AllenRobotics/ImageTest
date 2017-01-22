@@ -1,6 +1,5 @@
 package org.usfirst.frc.team5417.robot.matrixops;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,9 +14,17 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //
 public class MatchTemplateOperation implements MatrixOperation {
 
+	//
+	// Originally we used BigIntegers here. However, consider this:
+	// - A 1080p image is 1920x1080 pixels in size.
+	// - Even if the entire image was one big group (all pixels set), the largest sum in a single
+	//   dimension would be (1920 / 2) * 1080 = 1,036,800
+	// - That sum is much smaller than the 2 billion or so positive integers that can be represented
+	//   with a regular int variable.
+	//
 	public class CenterSum {
-		public BigInteger xSum = new BigInteger("0");
-		public BigInteger ySum = new BigInteger("0");
+		public int xSum = 0;
+		public int ySum = 0;
 		public int size = 0;
 
 	}
@@ -124,13 +131,13 @@ public class MatchTemplateOperation implements MatrixOperation {
 
 					if (groupsCenter.containsKey(color)) {
 						CenterSum sum = groupsCenter.get(color);
-						sum.xSum = sum.xSum.add(new BigInteger(new Integer(c).toString()));
-						sum.ySum = sum.ySum.add(new BigInteger(new Integer(r).toString()));
+						sum.xSum += c;
+						sum.ySum += r;
 						sum.size++;
 					} else {
 						CenterSum sum = new CenterSum();
-						sum.xSum = sum.xSum.add(new BigInteger(new Integer(c).toString()));
-						sum.ySum = sum.ySum.add(new BigInteger(new Integer(r).toString()));
+						sum.xSum += c;
+						sum.ySum += r;
 						sum.size++;
 						groupsCenter.put(color, sum);
 					}
@@ -143,8 +150,8 @@ public class MatchTemplateOperation implements MatrixOperation {
 		for (Color color : groupsCenter.keySet()) {
 
 			CenterSum sum = groupsCenter.get(color);
-			int centerX = sum.xSum.divide(new BigInteger((new Integer(sum.size).toString()))).intValue();
-			int centerY = sum.ySum.divide(new BigInteger((new Integer(sum.size).toString()))).intValue();
+			int centerX = sum.xSum / sum.size;
+			int centerY = sum.ySum / sum.size;
 			Point center = new Point(centerX, centerY);
 			result.add(center);
 		}
