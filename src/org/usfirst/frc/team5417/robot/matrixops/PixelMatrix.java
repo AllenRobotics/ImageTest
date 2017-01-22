@@ -22,7 +22,7 @@ public class PixelMatrix {
 			pixels[r] = new Pixel[cols];
 
 			for (int c = 0; c < cols; c++) {
-				pixels[r][c] = new Pixel(0, 0, 0);
+				pixels[r][c] = new Pixel(c, r, 0, 0, 0);
 			}
 		}
 	}
@@ -66,6 +66,9 @@ public class PixelMatrix {
 	}
 
 	public Pixel get(int r, int c) {
+		if (r < 0 || c < 0 || r >= rows() || c >= cols()) {
+			System.err.println("Uh-oh!");
+		}
 		return pixels[r][c];
 	}
 

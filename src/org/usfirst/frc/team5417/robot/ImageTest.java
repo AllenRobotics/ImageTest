@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5417.robot;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +27,13 @@ public class ImageTest {
 		
 		List<MatrixOperation> operations = new ArrayList<MatrixOperation>();
 
-		List<Matrix> horizontalTemplates = new ArrayList<Matrix>();
-		horizontalTemplates.add(new Matrix(40, 150, 1));
-		horizontalTemplates.add(new Matrix(20, 150, 1));
+		List<BooleanMatrix> horizontalTemplates = new ArrayList<BooleanMatrix>();
+		horizontalTemplates.add(new BooleanMatrix(40, 150, true));
+		horizontalTemplates.add(new BooleanMatrix(20, 150, true));
 
-		List<Matrix> verticalTemplates = new ArrayList<Matrix>();
-		verticalTemplates.add(new Matrix(150, 40, 1));
-		verticalTemplates.add(new Matrix(150, 20, 1));
+		List<BooleanMatrix> verticalTemplates = new ArrayList<BooleanMatrix>();
+		verticalTemplates.add(new BooleanMatrix(150, 40, true));
+		verticalTemplates.add(new BooleanMatrix(150, 20, true));
 
 		// filter colors
 		operations.add(new FilterColorOperation(
@@ -56,9 +57,21 @@ public class ImageTest {
 
 		int operationNumber = 1;
 
+		double totalElapsedOperationSeconds = 0;
+		DecimalFormat decimalFormat = new DecimalFormat("0.000000");
+		
 		Mat tempM = pixelMatrix.toMat();
 		for (MatrixOperation op : operations) {
+			
+			Stopwatch oneOperationStopwatch = Stopwatch.startNew();
 			pixelMatrix = op.doOperation(pixelMatrix);
+			oneOperationStopwatch.stop();
+			
+			double oneOperationElapsedSeconds = oneOperationStopwatch.getTotalSeconds(); 
+			totalElapsedOperationSeconds += oneOperationElapsedSeconds;
+			
+			System.out.println("Operation " + operationNumber + " took " + decimalFormat.format(oneOperationElapsedSeconds) + " seconds");
+			
 
 			tempM = pixelMatrix.toMat();
 			ImageWriter operationWriter = new FileImageWriter("C:/temp/operation-step-" + operationNumber + ".bmp");
@@ -67,6 +80,8 @@ public class ImageTest {
 			operationNumber++;
 		}
 
+		System.out.println("All operations took " + decimalFormat.format(totalElapsedOperationSeconds) + " seconds");
+		
 		tempM = pixelMatrix.toMat();
 		ImageWriter writer = new FileImageWriter("C:/temp/outputImage.png");
 		writer.write(tempM);

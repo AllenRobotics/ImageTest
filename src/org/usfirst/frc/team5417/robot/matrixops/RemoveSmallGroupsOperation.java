@@ -21,39 +21,40 @@ public class RemoveSmallGroupsOperation implements MatrixOperation {
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 
-		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+//		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+//		for (int r = 0; r < m.rows(); r++) {
+//			for (int c = 0; c < m.cols(); c++) {
+//
+//				Pixel pixel = m.get(r, c);
+//				result.put(r, c, pixel);
+//
+//			}
+//		}
 
-		for (int r = 0; r < m.rows(); r++) {
-			for (int c = 0; c < m.cols(); c++) {
+		PixelMatrix result = m;
 
-				Pixel pixel = m.get(r, c);
-				result.put(r, c, pixel);
 
-			}
-		}
+		HashMap<Pixel, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
+		HashSet<Pixel> colorsToRemove = new HashSet<>();
 
-		HashMap<Color, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
-		HashSet<Color> colorsToRemove = new HashSet<>();
-
-		for (Color color : groupsToCount.keySet()) {
+		for (Pixel color : groupsToCount.keySet()) {
 			Integer count = groupsToCount.get(color);
 
 			if (count < minimumGroupPixelCount) {
-				colorsToRemove.add(color);
+				// NOTE: we MUST make a new Pixel here because we mutate the pixels
+				// below as we go, thus invalidating any of them that have been added
+				// to the colorsToRemove HashSet
+				colorsToRemove.add(new Pixel(color.location.getX(), color.location.getY(), color));
 			}
 		}
-
-		Pixel blackPixel = new Pixel(0, 0, 0);
 
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 				Pixel pixel = m.get(r, c);
 
 				if (!MatrixUtilities.isBlackPixel(pixel)) {
-					Color color = new Color(pixel);
-
-					if (colorsToRemove.contains(color)) {
-						result.put(r, c, blackPixel);
+					if (colorsToRemove.contains(pixel)) {
+						result.put(r, c, MatrixUtilities.blackPixel);
 					}
 				}
 

@@ -11,58 +11,43 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //Input: a binarized image (black and white)
 //Output: a binarized image, with the white regions eroded
 //
-public class ErosionOperation implements MatrixOperation{
+public class ErosionOperation implements MatrixOperation {
 
 	private int regionWidth;
 
 	public ErosionOperation(int regionWidth) {
 		this.regionWidth = regionWidth;
 	}
-	
-	
-	
+
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 
-		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		PixelMatrix result = m;
 
-		HashSet<Point> pointsToTurnBlack = new HashSet<>();
+		List<Point> pointsToTurnBlack = new ArrayList<Point>();
+		BooleanMatrix alreadyProcessedPixels = new BooleanMatrix(m.rows(), m.cols(), false);
 
-		Matrix kernel = MatrixUtilities.getSquareKernel(regionWidth);
-		Color whitePixel = new Color(255, 255, 255);
-		
+		BooleanMatrix kernel = MatrixUtilities.getSquareKernel(regionWidth);
+
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 
 				Pixel pixel = m.get(r, c);
+				//result.put(r, c, pixel);
 
 				if (MatrixUtilities.isBlackPixel(pixel)) {
-					Point[] adjacentPoints = MatrixUtilities.getAdjacentPoints(r, c, m, kernel, whitePixel);
-
-					for (Point point : adjacentPoints) {
-						pointsToTurnBlack.add(point);
-					}
-
+					MatrixUtilities.addAdjacentPointsIfNotProcessed(pointsToTurnBlack, alreadyProcessedPixels, r, c, m,
+							kernel, MatrixUtilities.whiteColor);
 				}
-
-				result.put(r, c, pixel);
 			}
 		}
-		
-		double[] blackPixel = { 0, 0, 0 };
 
 		for (Point point : pointsToTurnBlack) {
-			result.put(point.getX(), point.getY(), blackPixel);
+			result.put(point.getY(), point.getX(), MatrixUtilities.blackPixel);
 		}
-		return result;
-		
-		
-		
-	}
-	
 
-	
-	
-	
+		return result;
+	}
 
 }

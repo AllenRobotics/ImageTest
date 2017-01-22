@@ -22,11 +22,11 @@ public class MatchTemplateOperation implements MatrixOperation {
 
 	}
 
-	private List<Matrix> templates;
+	private List<BooleanMatrix> templates;
 	private double minimumScale, maximumScale;
 	private double minimumMatchPercentage;
 
-	public MatchTemplateOperation(List<Matrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage) {
+	public MatchTemplateOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage) {
 		this.templates = templates;
 		this.minimumScale = minimumScale;
 		this.maximumScale = maximumScale;
@@ -36,15 +36,17 @@ public class MatchTemplateOperation implements MatrixOperation {
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 		
-		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+//		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+//		// copy the input to the output. we will clear groups from the output below.
+//		for (int r = 0; r < m.rows(); r++) {
+//			for (int c = 0; c < m.cols(); c++) {
+//				Pixel pixel = m.get(r, c);
+//				result.put(r, c, pixel);
+//			}
+//		}
+
+		PixelMatrix result = m;
 		
-		// copy the input to the output. we will clear groups from the output below.
-		for (int r = 0; r < m.rows(); r++) {
-			for (int c = 0; c < m.cols(); c++) {
-				Pixel pixel = m.get(r, c);
-				result.put(r, c, pixel);
-			}
-		}
 		
 		// only generate this many scaleFactors
 		int numberOfScaleFactors = 10;
@@ -52,17 +54,42 @@ public class MatchTemplateOperation implements MatrixOperation {
 		
 		List<Point> centers = findCenters(m);
 		List<Double> scaleFactors = generateScaleFactors(minimumScale, maximumScale, stepSize);
-		HashMap<Color, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
+		HashMap<Pixel, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
 		
-		for (Point center : centers) {
+		// pre-scale the templates to save a few CPU cycles
+		HashMap<Double, List<BooleanMatrix>> scaledTemplates = new HashMap<>();
+		for (Double scaleFactor : scaleFactors) {
 			
-			Color groupColor = getGroupColor(m, center);
+			List<BooleanMatrix> templatesForCurrentScale = new ArrayList<>();
+			for (BooleanMatrix template : this.templates) {
+				
+				BooleanMatrix scaledTemplate = template.scale(scaleFactor);		
+				templatesForCurrentScale.add(scaledTemplate);
+			}
+
+			scaledTemplates.put(scaleFactor, templatesForCurrentScale);
+		}
+		
+		// now process the pre-scaled templates
+		for (Point center : centers) {
+
+			// we must create a new Pixel here because we mutate below, thus invalidating the groupColor
+			// pixel once we change it...
+			//
+			// ...Meaning that the rest of the group after the particular Pixel used
+			// as the groupColor will fail the equality check since the groupColor will
+			// have been changed.
+			//
+			Pixel groupColor = new Pixel(0, 0, getGroupColor(m, center));
 			boolean doesGroupMatchAnyTemplate = false;
 			
-			for (Matrix template : this.templates) {
-				for (Double scaleFactor : scaleFactors) {
-					
-					Matrix scaledTemplate = template.scale(scaleFactor);
+			for (Double scaleFactor : scaleFactors) {
+				
+				// get our list of pre-scaled templates for this scale
+				List<BooleanMatrix> templatesForCurrentScale = scaledTemplates.get(scaleFactor);
+
+				// process each scaled template one after the other
+				for (BooleanMatrix scaledTemplate : templatesForCurrentScale) {
 
 					double matchPercentage = 0;
 					if (groupColor != null) {
@@ -94,17 +121,15 @@ public class MatchTemplateOperation implements MatrixOperation {
 		return result;
 	}
 
-	private void removeGroup(PixelMatrix m, Color groupColor) {
+	private void removeGroup(PixelMatrix m, Pixel groupColor) {
 
-		Pixel blackPixel = new Pixel(0, 0, 0);
-		
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 
 				Pixel pixel = m.get(r, c);
 				
-				if (pixel.r == groupColor.r() && pixel.g == groupColor.g() && pixel.b == groupColor.b()) {
-					m.put(r, c, blackPixel);
+				if (pixel.r == groupColor.r && pixel.g == groupColor.g && pixel.b == groupColor.b) {
+					m.put(r, c, MatrixUtilities.blackPixel);
 				}
 			}
 		}
@@ -112,7 +137,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 	
 	private List<Point> findCenters(PixelMatrix m) {
 
-		HashMap<Color, CenterSum> groupsCenter = new HashMap<>();
+		HashMap<Pixel, CenterSum> groupsCenter = new HashMap<>();
 
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
@@ -120,10 +145,8 @@ public class MatchTemplateOperation implements MatrixOperation {
 				Pixel pixel = m.get(r, c);
 
 				if (!MatrixUtilities.isBlackPixel(pixel)) {
-					Color color = new Color(pixel);
-
-					if (groupsCenter.containsKey(color)) {
-						CenterSum sum = groupsCenter.get(color);
+					if (groupsCenter.containsKey(pixel)) {
+						CenterSum sum = groupsCenter.get(pixel);
 						sum.xSum = sum.xSum.add(new BigInteger(new Integer(c).toString()));
 						sum.ySum = sum.ySum.add(new BigInteger(new Integer(r).toString()));
 						sum.size++;
@@ -132,7 +155,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 						sum.xSum = sum.xSum.add(new BigInteger(new Integer(c).toString()));
 						sum.ySum = sum.ySum.add(new BigInteger(new Integer(r).toString()));
 						sum.size++;
-						groupsCenter.put(color, sum);
+						groupsCenter.put(pixel, sum);
 					}
 				}
 			}
@@ -140,11 +163,12 @@ public class MatchTemplateOperation implements MatrixOperation {
 
 		List<Point> result = new ArrayList<Point>();
 
-		for (Color color : groupsCenter.keySet()) {
+		for (Pixel color : groupsCenter.keySet()) {
 
 			CenterSum sum = groupsCenter.get(color);
 			int centerX = sum.xSum.divide(new BigInteger((new Integer(sum.size).toString()))).intValue();
 			int centerY = sum.ySum.divide(new BigInteger((new Integer(sum.size).toString()))).intValue();
+			
 			Point center = new Point(centerX, centerY);
 			result.add(center);
 		}
@@ -171,11 +195,11 @@ public class MatchTemplateOperation implements MatrixOperation {
 		return scales;
 	}
 	
-	private Color getGroupColor(PixelMatrix m, Point center) {
+	private Pixel getGroupColor(PixelMatrix m, Point center) {
 		Pixel centerPixel = m.get(center.getY(), center.getX());
 
 		if (!MatrixUtilities.isBlackPixel(centerPixel)) {
-			return new Color(centerPixel);
+			return centerPixel;
 		}
 		else {
 
@@ -195,7 +219,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 						if (MatrixUtilities.isInImage(r, topLeftCorner.getX(), m.rows(), m.cols())) {
 							Pixel pixel = m.get(r, topLeftCorner.getX());
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
-								return new Color(pixel);
+								return pixel;
 							}
 						}
 
@@ -203,7 +227,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 						if (MatrixUtilities.isInImage(r, bottomRightCorner.getX(), m.rows(), m.cols())) {
 							Pixel pixel = m.get(r, bottomRightCorner.getX());
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
-								return new Color(pixel);
+								return pixel;
 							}
 						}
 
@@ -213,7 +237,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 						if (MatrixUtilities.isInImage(topLeftCorner.getY(), c, m.rows(), m.cols())) {
 							Pixel pixel = m.get(topLeftCorner.getY(), c);
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
-								return new Color(pixel);
+								return pixel;
 							}
 						}
 
@@ -221,7 +245,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 						if (MatrixUtilities.isInImage(bottomRightCorner.getY(), c, m.rows(), m.cols())) {
 							Pixel pixel = m.get(bottomRightCorner.getY(), c);
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
-								return new Color(pixel);
+								return pixel;
 							}
 						}
 					}
@@ -233,7 +257,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 		return null;
 	}
 	
-	private double getMatchPercentage(PixelMatrix m, Matrix template, Point center, Color groupColor, HashMap<Color, Integer> groupsToCount) {
+	private double getMatchPercentage(PixelMatrix m, BooleanMatrix template, Point center, Pixel groupColor, HashMap<Pixel, Integer> groupsToCount) {
 		
 		double templateSize = template.rows() * template.cols();
 
@@ -247,7 +271,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 				
 				if (MatrixUtilities.isInImage(imageR,  imageC, m.rows(), m.cols())) {
 					Pixel pixel = m.get(imageR, imageC);
-					if (pixel.r == groupColor.r() && pixel.g == groupColor.g() && pixel.b == groupColor.b()) {
+					if (pixel.r == groupColor.r && pixel.g == groupColor.g && pixel.b == groupColor.b) {
 						matchCount++;
 					}
 				}

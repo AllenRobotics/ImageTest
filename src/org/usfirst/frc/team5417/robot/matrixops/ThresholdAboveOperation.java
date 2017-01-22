@@ -19,19 +19,17 @@ public class ThresholdAboveOperation implements MatrixOperation {
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 
-		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
-
-		double[] whitePixel = { 255 };
-		double[] blackPixel = { 0 };
+		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		PixelMatrix result = m;
 
 		for (int r = 0; r < m.rows(); ++r) {
 			for (int c = 0; c < m.cols(); ++c) {
 				Pixel pixel = m.get(r, c);
 
 				if (pixel.gray() >= this.threshold) {
-					result.put(r, c, whitePixel);
+					result.put(r, c, MatrixUtilities.whitePixel);
 				} else {
-					result.put(r, c, blackPixel);
+					result.put(r, c, MatrixUtilities.blackPixel);
 				}
 			}
 		}

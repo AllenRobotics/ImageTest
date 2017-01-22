@@ -12,17 +12,20 @@ public class GrayScaleOperation implements MatrixOperation {
 
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
-		PixelMatrix m2 = new PixelMatrix(m.rows(), m.cols());
+
+		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		PixelMatrix result = m;
+		
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 				Pixel colorPixel = m.get(r, c);
 				//
 				// see https://en.wikipedia.org/wiki/Grayscale for grayscale conversion formula
 				//
-				m2.put(r, c, colorPixel.gray());
+				result.put(r, c, colorPixel.gray());
 			}
 		}
-		return m2;
+		return result;
 	}
 
 }

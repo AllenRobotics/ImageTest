@@ -24,11 +24,8 @@ public class Matrix {
 	}
 
 	public Matrix scale(double scaleFactor) {
-		int newRows;
-		int newCols;
-
-		newRows = (int) (this.rows() * scaleFactor);
-		newCols = (int) (this.cols() * scaleFactor);
+		int newRows = (int) (this.rows() * scaleFactor);
+		int newCols = (int) (this.cols() * scaleFactor);
 
 		Matrix scaledMatrix = new Matrix(newRows, newCols, 1);
 

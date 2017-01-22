@@ -12,25 +12,31 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //
 public class Pixel {
 
+	public Point location;
+	
 	public int r;
 	public int g;
 	public int b;
 	
 	private boolean isGray = false;
 
-	public Pixel(int r, int g, int b) {
+	public Pixel(int x, int y, int r, int g, int b) {
+		this.location = new Point(x, y);
 		put(r, g, b);
 	}
 
-	public Pixel(int gray) {
+	public Pixel(int x, int y, int gray) {
+		this.location = new Point(x, y);
 		putGray(gray);
 	}
 
-	public Pixel(double[] channels) {
+	public Pixel(int x, int y, double[] channels) {
+		this.location = new Point(x, y);
 		put(channels);
 	}
 	
-	public Pixel(Pixel other) {
+	public Pixel(int x, int y, Pixel other) {
+		this.location = new Point(x, y);
 		put(other);
 	}
 
@@ -85,4 +91,28 @@ public class Pixel {
 		this.isGray = true;
 	}
 	
+	// these functions:
+	//   public int hashCode()
+	//   public boolean equals(Object other)
+	// are so that we can use a Pixel as a key in HashSet or HashMap
+	
+	@Override
+	public int hashCode() {
+		return (int)
+				(this.r ^ 3
+				+ this.g ^ 13
+				+ this.b ^ 29);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o == null) return false;
+		if (false == Pixel.class.isAssignableFrom(o.getClass())) return false;
+		
+		final Pixel other = (Pixel)o;
+		return this.r == other.r
+				&& this.g == other.g
+				&& this.b == other.b;
+	}
+
 }

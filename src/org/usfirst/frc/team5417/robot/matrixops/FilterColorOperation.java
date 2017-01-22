@@ -23,12 +23,12 @@ public class FilterColorOperation implements MatrixOperation {
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 
-		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		PixelMatrix result = m;
 
 		int minRed = redRange.getLowerBound(), maxRed = redRange.getUpperBound();
 		int minGreen = greenRange.getLowerBound(), maxGreen = greenRange.getUpperBound();
 		int minBlue = blueRange.getLowerBound(), maxBlue = blueRange.getUpperBound();
-		double[] blackPixel = { 0, 0, 0 };
 
 		for (int r = 0; r < m.rows(); ++r) {
 			for (int c = 0; c < m.cols(); ++c) {
@@ -37,11 +37,11 @@ public class FilterColorOperation implements MatrixOperation {
 				// If pixel color is out of range in any value,
 				// the pixel turns black
 				if (pixel.r < minRed || pixel.r > maxRed) {
-					result.put(r, c, blackPixel);
+					result.put(r, c, MatrixUtilities.blackPixel);
 				} else if (pixel.g < minGreen || pixel.g > maxGreen) {
-					result.put(r, c, blackPixel);
+					result.put(r, c, MatrixUtilities.blackPixel);
 				} else if (pixel.b < minBlue || pixel.b > maxBlue) {
-					result.put(r, c, blackPixel);
+					result.put(r, c, MatrixUtilities.blackPixel);
 				} else {
 					// if the rgb values for this pixel are in the
 					// range, pass it through

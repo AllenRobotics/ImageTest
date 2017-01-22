@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.usfirst.frc.team5417.robot.MatrixUtilities;
 
 //
 // See https://en.wikipedia.org/wiki/Disjoint-set_data_structure
@@ -20,19 +21,19 @@ import org.opencv.core.Mat;
 public class FindGroupsOperation implements MatrixOperation {
 
 	private SecureRandom random = new SecureRandom();
-	private HashSet<Color> usedColors = new HashSet<>();
+	private HashSet<Pixel> usedColors = new HashSet<>();
 	
 	private boolean isCloseToBlack(Pixel color) {
 		return color.r < 100 && color.g < 100 && color.b < 100;
 	}
 	
 	private boolean hasBeenUsedBefore(Pixel color) {
-		return usedColors.contains(new Color(color));
+		return usedColors.contains(color);
 	}
 	
 	private Pixel generateNewColor() {
 		// we use a mutable pixel here for speed, only creating Color objects as needed
-		Pixel newColor = new Pixel(0, 0, 0);
+		Pixel newColor = new Pixel(0, 0, 0, 0, 0);
 		
 		while (isCloseToBlack(newColor) || hasBeenUsedBefore(newColor))
 		{
@@ -53,7 +54,7 @@ public class FindGroupsOperation implements MatrixOperation {
 			}
 		}
 
-		usedColors.add(new Color(newColor));
+		usedColors.add(newColor);
 		
 		return newColor;
 	}
@@ -119,8 +120,10 @@ public class FindGroupsOperation implements MatrixOperation {
 			}
 		}
 
-		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
-		double[] blackPixel = { 0, 0, 0 };
+		
+		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
+		PixelMatrix result = m;
+		
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 
@@ -129,7 +132,7 @@ public class FindGroupsOperation implements MatrixOperation {
 				// generating the color coded output image by using a
 				// new color for each group.
 				if (currentNode == null) {
-					result.put(r, c, blackPixel);
+					result.put(r, c, MatrixUtilities.blackPixel);
 				} else {
 					DisjointSetNode root = Find(currentNode);
 					result.put(r, c, root.getOrGenerateColor());
