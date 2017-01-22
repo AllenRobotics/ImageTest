@@ -52,7 +52,7 @@ public class ImageTest {
 		// remove all groups with too few pixels
 		operations.add(new RemoveSmallGroupsOperation(100));
 		// remove all groups that don't match a template
-		operations.add(new MatchTemplateOperation(horizontalTemplates, 0.25, 4, 0.7));
+		operations.add(new MatchTemplateOperation(verticalTemplates, 0.25, 4, 0.7));
 
 		int operationNumber = 1;
 
