@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot;
+package org.usfirst.frc.team5417.robot.matrixops;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.usfirst.frc.team5417.robot.ImageWriter;
 
 //
 // Write an image to a file
@@ -23,7 +24,6 @@ public class FileImageWriter implements ImageWriter {
 
 	@Override
 	public void write(Mat m) {
-		// TODO Auto-generated method stub
 
 		BufferedImage outputImage = mat2Img(m);
 		File outputfile = new File(fileName);

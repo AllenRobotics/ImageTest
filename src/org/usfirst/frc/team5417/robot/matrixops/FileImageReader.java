@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot;
+package org.usfirst.frc.team5417.robot.matrixops;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.usfirst.frc.team5417.robot.ImageReader;
 
 //
 // Read an image from a file

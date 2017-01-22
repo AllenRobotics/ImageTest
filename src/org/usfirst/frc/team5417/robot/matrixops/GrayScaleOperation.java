@@ -10,6 +10,8 @@ import org.opencv.imgproc.Imgproc;
 //
 public class GrayScaleOperation implements MatrixOperation {
 
+	public String name() { return "GrayScale"; } 
+
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 

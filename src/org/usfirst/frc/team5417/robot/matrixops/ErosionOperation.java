@@ -15,6 +15,8 @@ public class ErosionOperation implements MatrixOperation {
 
 	private int regionWidth;
 
+	public String name() { return "Erosion"; } 
+
 	public ErosionOperation(int regionWidth) {
 		this.regionWidth = regionWidth;
 	}

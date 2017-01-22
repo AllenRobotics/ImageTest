@@ -18,10 +18,10 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 import org.usfirst.frc.team5417.robot.matrixops.BooleanMatrix;
-import org.usfirst.frc.team5417.robot.matrixops.Matrix;
 import org.usfirst.frc.team5417.robot.matrixops.Pixel;
 import org.usfirst.frc.team5417.robot.matrixops.PixelMatrix;
 import org.usfirst.frc.team5417.robot.matrixops.Point;
+import org.usfirst.frc.team5417.robot.opencvops.Color;
 
 public class MatrixUtilities {
 
@@ -34,6 +34,11 @@ public class MatrixUtilities {
 	public static Pixel blackColor = new Pixel(0, 0, 0, 0, 0);
 	public static Pixel whiteColor = new Pixel(0, 0, 255, 255, 255);
 
+	public static Mat reverseColorChannels(Mat m) {
+		Imgproc.cvtColor(m, m, Imgproc.COLOR_BGR2RGB);
+		return m;
+	}
+	
 	public static BooleanMatrix getDiamondKernel(int regionWidth) {
 
 		BooleanMatrix diamond = new BooleanMatrix(regionWidth, regionWidth, false);
@@ -150,6 +155,14 @@ public class MatrixUtilities {
 		}
 	}
 
+	public static boolean isBlackPixel(double[] pixel) {
+		if (pixel[0] == 0 && pixel[1] == 0 && pixel[2] == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public static HashMap<Pixel, Integer> getGroupSizes(PixelMatrix m) {
 
 		HashMap<Pixel, Integer> groupsToCount = new HashMap<>();
@@ -165,6 +178,35 @@ public class MatrixUtilities {
 						groupsToCount.put(pixel, count + 1);
 					} else {
 						groupsToCount.put(pixel, 1);
+					}
+				}
+			}
+		}
+
+		return groupsToCount;
+	}
+
+	public static HashMap<Color, Integer> getGroupSizes(Mat m) {
+
+		HashMap<Color, Integer> groupsToCount = new HashMap<>();
+
+		for (int r = 0; r < m.rows(); r++) {
+			for (int c = 0; c < m.cols(); c++) {
+
+				double[] pixel = m.get(r, c);
+
+				// if the pixel is black
+				if (pixel[0] == 0 && pixel[1] == 0 && pixel[2] == 0) {
+					// do nothing if it's black
+				}
+				// else the pixel is not black, so count the size of the group
+				else {
+					Color color = new Color(pixel);
+					if (groupsToCount.containsKey(color)) {
+						Integer count = groupsToCount.get(color);
+						groupsToCount.put(color, count + 1);
+					} else {
+						groupsToCount.put(color, 1);
 					}
 				}
 			}

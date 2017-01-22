@@ -14,6 +14,8 @@ public class RemoveSmallGroupsOperation implements MatrixOperation {
 
 	private int minimumGroupPixelCount;
 
+	public String name() { return "Remove Small Groups"; } 
+
 	public RemoveSmallGroupsOperation(int minimumGroupPixelCount) {
 		this.minimumGroupPixelCount = minimumGroupPixelCount;
 	}

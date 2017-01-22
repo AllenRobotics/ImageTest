@@ -33,9 +33,15 @@ public class PixelMatrix {
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 				double[] pixel = m.get(r, c);
-				// m.get(...) returns the pixel in bgr order, but we want rgb
-				reverseChannels(pixel);
-				this.put(r, c, pixel);
+				if (pixel.length == 3) {
+					// m.get(...) returns the pixel in bgr order, but we want rgb
+					reverseChannels(pixel);
+					this.put(r, c, pixel);
+				}
+				else {
+					// gray
+					this.put(r, c, pixel[0]);
+				}
 			}
 		}
 	}

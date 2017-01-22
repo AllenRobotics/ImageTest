@@ -1,6 +1,7 @@
 package org.usfirst.frc.team5417.robot.matrixops;
 
 import org.opencv.core.Mat;
+import org.usfirst.frc.team5417.robot.ChannelRange;
 import org.usfirst.frc.team5417.robot.MatrixUtilities;
 
 //
@@ -13,6 +14,8 @@ public class FilterColorOperation implements MatrixOperation {
 	private ChannelRange redRange;
 	private ChannelRange greenRange;
 	private ChannelRange blueRange;
+
+	public String name() { return "Filter Color"; } 
 
 	public FilterColorOperation(ChannelRange redRange, ChannelRange greenRange, ChannelRange blueRange) {
 		this.redRange = redRange;

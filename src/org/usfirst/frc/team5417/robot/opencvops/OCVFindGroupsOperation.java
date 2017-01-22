@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.robot.opencvops;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -8,7 +8,6 @@ import java.util.List;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.usfirst.frc.team5417.robot.Matrix;
-import org.usfirst.frc.team5417.robot.MatrixUtilities;
 
 //
 // See https://en.wikipedia.org/wiki/Disjoint-set_data_structure
@@ -19,24 +18,26 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 // Input: a grayscale or binarized (black or white) image
 // Output: a color image where each identified group is color coded 
 //
-public class FindGroupsOperation implements MatrixOperation {
+public class OCVFindGroupsOperation implements OpenCVOperation {
+
+	private static double[] blackPixel = { 0, 0, 0 };
 
 	private SecureRandom random = new SecureRandom();
-	private HashSet<Pixel> usedColors = new HashSet<>();
+	private HashSet<Color> usedColors = new HashSet<>();
 
-	public String name() { return "Find Groups"; } 
+	public String name() { return "Open CV Find Groups"; } 
 
-	private boolean isCloseToBlack(Pixel color) {
+	private boolean isCloseToBlack(Color color) {
 		return color.r < 100 && color.g < 100 && color.b < 100;
 	}
 	
-	private boolean hasBeenUsedBefore(Pixel color) {
+	private boolean hasBeenUsedBefore(Color color) {
 		return usedColors.contains(color);
 	}
 	
-	private Pixel generateNewColor() {
+	private Color generateNewColor() {
 		// we use a mutable pixel here for speed, only creating Color objects as needed
-		Pixel newColor = new Pixel(0, 0, 0, 0, 0);
+		Color newColor = new Color(0, 0, 0);
 		
 		while (isCloseToBlack(newColor) || hasBeenUsedBefore(newColor))
 		{
@@ -64,7 +65,7 @@ public class FindGroupsOperation implements MatrixOperation {
 	
 	public class DisjointSetNode {
 		// this is private so that we're forced to call getOrGenerateColor
-		private Pixel rgb;
+		private Color rgb;
 		
 		public DisjointSetNode parent;
 		public int rank;
@@ -73,7 +74,7 @@ public class FindGroupsOperation implements MatrixOperation {
 		// output image. it's much faster to generate one color for
 		// each group than to generate one color for each pixel. that's
 		// why we took the generateNewColor call out of MakeSet().
-		public Pixel getOrGenerateColor() {
+		public Color getOrGenerateColor() {
 			if (this.rgb == null) {
 				this.rgb = generateNewColor();
 			}
@@ -81,12 +82,12 @@ public class FindGroupsOperation implements MatrixOperation {
 		}
 	}
 
-	public boolean isBlackPixel(Pixel pixel) {
-		return pixel.gray() == 0;
+	public boolean isBlackPixel(double[] pixel) {
+		return pixel[0] == 0;
 	}
 
 	@Override
-	public PixelMatrix doOperation(PixelMatrix m) {
+	public Mat doOperation(Mat m) {
 
 		Matrix nodeGroups = new Matrix(m.rows(), m.cols(), null);
 
@@ -96,9 +97,9 @@ public class FindGroupsOperation implements MatrixOperation {
 				// Build a matrix of DisjointSetNodes where every black pixel is
 				// null and otherwise is set
 
-				Pixel gray = m.get(r, c);
+				double[] pixel = m.get(r, c);
 
-				if (isBlackPixel(gray)) {
+				if (isBlackPixel(pixel)) {
 					nodeGroups.put(r, c, null);
 				} else {
 					DisjointSetNode newNode = MakeSet();
@@ -124,8 +125,8 @@ public class FindGroupsOperation implements MatrixOperation {
 		}
 
 		
-		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
-		PixelMatrix result = m;
+		Mat result = new Mat(m.size(), CvType.CV_32SC3);
+		double[] color = { 0, 0, 0 };
 		
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
@@ -135,10 +136,14 @@ public class FindGroupsOperation implements MatrixOperation {
 				// generating the color coded output image by using a
 				// new color for each group.
 				if (currentNode == null) {
-					result.put(r, c, MatrixUtilities.blackPixel);
+					result.put(r, c, blackPixel);
 				} else {
 					DisjointSetNode root = Find(currentNode);
-					result.put(r, c, root.getOrGenerateColor());
+					Color uniqueColor = root.getOrGenerateColor();
+					color[0] = uniqueColor.r;
+					color[1] = uniqueColor.g;
+					color[2] = uniqueColor.b;
+					result.put(r, c, color);
 				}
 			}
 		}

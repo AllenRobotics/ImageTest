@@ -12,6 +12,8 @@ public class ThresholdAboveOperation implements MatrixOperation {
 
 	private int threshold;
 
+	public String name() { return "Threshold Above"; } 
+
 	public ThresholdAboveOperation(int threshold) {
 		this.threshold = threshold;
 	}

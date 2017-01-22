@@ -13,7 +13,9 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //Input: a color image, where each group is a unique color
 //Output: a color image, where groups have been removed that match no template at no attempted scale
 //
-public class MatchTemplateOperation implements MatrixOperation {
+public class MatchTemplatesOperation implements MatrixOperation {
+
+	public String name() { return "Match templates"; } 
 
 	public class CenterSum {
 		public BigInteger xSum = new BigInteger("0");
@@ -26,7 +28,7 @@ public class MatchTemplateOperation implements MatrixOperation {
 	private double minimumScale, maximumScale;
 	private double minimumMatchPercentage;
 
-	public MatchTemplateOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage) {
+	public MatchTemplatesOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage) {
 		this.templates = templates;
 		this.minimumScale = minimumScale;
 		this.maximumScale = maximumScale;

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.robot;
 
 //
 // Used in the FilterColorOperation

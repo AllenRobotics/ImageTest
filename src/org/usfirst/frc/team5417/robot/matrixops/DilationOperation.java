@@ -16,6 +16,8 @@ public class DilationOperation implements MatrixOperation {
 
 	private int regionWidth;
 
+	public String name() { return "Dilation"; } 
+
 	public DilationOperation(int regionWidth) {
 		this.regionWidth = regionWidth;
 	}

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.robot;
 
 //
 // Matrix class handles the nastiness of 2 dimensional jagged arrays
