@@ -33,10 +33,15 @@ public class ImageTest {
 		DoOpenCVOperations(false);
 
 		// print results
-		DoMixtureOperations(true);
+
 		DoPixelMatrixOperations(true);
+		System.out.println();
+
 		DoOpenCVOperations(true);
-		
+		System.out.println();
+
+		DoMixtureOperations(true);
+		System.out.println();
 	}
 
 	private static void DoPixelMatrixOperations(boolean print) {
@@ -139,7 +144,7 @@ public class ImageTest {
 		operations.add(new OCVRemoveSmallGroupsOperation(100));
 //		// remove all groups that don't match a template
 //		operations.add(new OCVMatchTemplatesOperation(horizontalTemplates, 0.25, 4, 0.7));
-		operations.add(new OCVMatchTemplatesOperation(horizontalTemplates, 0.25, 4, 0.7));
+		operations.add(new OCVMatchTemplatesOperation(verticalTemplates, 0.25, 4, 0.7));
 
 		int operationNumber = 1;
 
@@ -205,7 +210,7 @@ public class ImageTest {
 		ImageReader reader = new OCVFileImageReader("C:/temp/sampleimage.png");
 		Mat m = reader.read();
 
-		ImageWriter originalWriter = new OCVFileImageWriter("C:/temp/OpenCV-originalImage.png");
+		ImageWriter originalWriter = new OCVFileImageWriter("C:/temp/Mixture-originalImage.png");
 		originalWriter.write(m);
 
 		m = MatrixUtilities.reverseColorChannels(m);
@@ -278,7 +283,7 @@ public class ImageTest {
 		
 		if (print) {
 			m = pixelMatrix.toMat();
-			ImageWriter writer = new FileImageWriter("C:/temp/OpenCV-outputImage.png");
+			ImageWriter writer = new FileImageWriter("C:/temp/Mixture-outputImage.png");
 			writer.write(m);
 		}
 	}
