@@ -34,8 +34,6 @@ public class PixelMatrix {
 			for (int c = 0; c < m.cols(); c++) {
 				double[] pixel = m.get(r, c);
 				if (pixel.length == 3) {
-					// m.get(...) returns the pixel in bgr order, but we want rgb
-					reverseChannels(pixel);
 					this.put(r, c, pixel);
 				}
 				else {
@@ -46,19 +44,6 @@ public class PixelMatrix {
 		}
 	}
 	
-	private void reverseChannels(double[] pixel) {
-		// reverse the array
-		for(int i = 0; i < pixel.length / 2; i++) {
-			int headIndex = i;
-			int tailIndex = pixel.length - i - 1;
-			
-			// swap
-		    double temp = pixel[headIndex];
-		    pixel[headIndex] = pixel[tailIndex];
-		    pixel[tailIndex] = temp;
-		}
-	}
-
 	public void put(int r, int c, double[] channels) {
 		this.get(r, c).put(channels);
 	}
@@ -93,7 +78,7 @@ public class PixelMatrix {
 			for (int c = 0; c < cols(); c++) {
 				Pixel pixel = this.get(r, c);
 
-				double[] bgr = { pixel.r, pixel.g, pixel.b };
+				double[] bgr = { pixel.b, pixel.g, pixel.r };
 				m.put(r, c, bgr);
 			}
 		}
