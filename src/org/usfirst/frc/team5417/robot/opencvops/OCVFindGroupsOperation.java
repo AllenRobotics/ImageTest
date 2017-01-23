@@ -91,15 +91,16 @@ public class OCVFindGroupsOperation implements OpenCVOperation {
 
 		Matrix nodeGroups = new Matrix(m.rows(), m.cols(), null);
 
+		byte[] pixel = new byte[1];
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 
 				// Build a matrix of DisjointSetNodes where every black pixel is
 				// null and otherwise is set
 
-				double[] pixel = m.get(r, c);
+				m.get(r, c, pixel);
 
-				if (isBlackPixel(pixel)) {
+				if (pixel[0] == 0) {
 					nodeGroups.put(r, c, null);
 				} else {
 					DisjointSetNode newNode = MakeSet();

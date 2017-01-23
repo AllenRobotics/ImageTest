@@ -14,11 +14,13 @@ public class OCVRemoveSmallGroupsOperation implements OpenCVOperation {
 	private static double[] blackPixel = { 0, 0, 0 };
 
 	private int minimumGroupPixelCount;
+	private HashMap<Color, Integer> groupSizes;
 
 	public String name() { return "Open CV Remove Small Groups"; } 
 
-	public OCVRemoveSmallGroupsOperation(int minimumGroupPixelCount) {
+	public OCVRemoveSmallGroupsOperation(int minimumGroupPixelCount, HashMap<Color, Integer> groupSizes) {
 		this.minimumGroupPixelCount = minimumGroupPixelCount;
+		this.groupSizes = groupSizes;
 	}
 
 	@Override
@@ -26,13 +28,10 @@ public class OCVRemoveSmallGroupsOperation implements OpenCVOperation {
 
 		Mat result = new Mat(m.size(), CvType.CV_32SC3);
 
-		// count group sizes
-		HashMap<Color, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
-
 		// find the colors to remove
 		HashSet<Color> colorsToRemove = new HashSet<>();
-		for (Color color : groupsToCount.keySet()) {
-			Integer count = groupsToCount.get(color);
+		for (Color color : groupSizes.keySet()) {
+			Integer count = groupSizes.get(color);
 			if (count < minimumGroupPixelCount) {
 				colorsToRemove.add(color);
 			}
@@ -42,9 +41,10 @@ public class OCVRemoveSmallGroupsOperation implements OpenCVOperation {
 		// allocations
 		Color color = new Color(0, 0, 0);
 
+		int[] pixel = new int[3];
 		for (int y = 0; y < m.rows(); y++) {
 			for (int x = 0; x < m.cols(); x++) {
-				double[] pixel = m.get(y, x);
+				m.get(y, x, pixel);
 
 				// if the pixel is black
 				if (pixel[0] == blackPixel[0] && pixel[1] == blackPixel[1] && pixel[2] == blackPixel[2]) {

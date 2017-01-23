@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
+import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 import org.usfirst.frc.team5417.robot.ImageWriter;
 
@@ -25,36 +26,8 @@ public class FileImageWriter implements ImageWriter {
 	@Override
 	public void write(Mat m) {
 
-		BufferedImage outputImage = mat2Img(m);
-		File outputfile = new File(fileName);
+		Highgui.imwrite(fileName, m);
 
-		try {
-			ImageIO.write(outputImage, "png", outputfile);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			throw new IllegalArgumentException("File does not exist");
-		}
-
-	}
-
-	public static BufferedImage mat2Img(Mat in) {
-
-		BufferedImage out;
-
-		Mat byteMat = new Mat(in.rows(), in.cols(), CvType.CV_8UC3);
-		in.assignTo(byteMat, CvType.CV_8UC3);
-
-		byte[] data = new byte[byteMat.rows() * byteMat.cols() * 3];
-		byteMat.get(0, 0, data);
-
-		int type = BufferedImage.TYPE_3BYTE_BGR;
-		// the rows/cols are swapped here intentionally
-		out = new BufferedImage(byteMat.cols(), byteMat.rows(), type);
-
-		out.getRaster().setDataElements(0, 0, byteMat.cols(), byteMat.rows(), data);
-		return out;
 	}
 
 }

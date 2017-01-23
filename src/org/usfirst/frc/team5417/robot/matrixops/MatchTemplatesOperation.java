@@ -27,12 +27,14 @@ public class MatchTemplatesOperation implements MatrixOperation {
 	private List<BooleanMatrix> templates;
 	private double minimumScale, maximumScale;
 	private double minimumMatchPercentage;
+	private HashMap<Pixel, Integer> groupSizes;
 
-	public MatchTemplatesOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage) {
+	public MatchTemplatesOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage, HashMap<Pixel, Integer> groupSizes) {
 		this.templates = templates;
 		this.minimumScale = minimumScale;
 		this.maximumScale = maximumScale;
 		this.minimumMatchPercentage = minimumMatchPercentage;
+		this.groupSizes = groupSizes;
 	}
 
 	@Override
@@ -56,7 +58,6 @@ public class MatchTemplatesOperation implements MatrixOperation {
 		
 		List<Point> centers = findCenters(m);
 		List<Double> scaleFactors = generateScaleFactors(minimumScale, maximumScale, stepSize);
-		HashMap<Pixel, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
 		
 		// pre-scale the templates to save a few CPU cycles
 		HashMap<Double, List<BooleanMatrix>> scaledTemplates = new HashMap<>();
@@ -95,7 +96,7 @@ public class MatchTemplatesOperation implements MatrixOperation {
 
 					double matchPercentage = 0;
 					if (groupColor != null) {
-						matchPercentage = getMatchPercentage(m, scaledTemplate, center, groupColor, groupsToCount);
+						matchPercentage = getMatchPercentage(m, scaledTemplate, center, groupColor, groupSizes);
 					}
 					
 					if (matchPercentage < minimumMatchPercentage) {

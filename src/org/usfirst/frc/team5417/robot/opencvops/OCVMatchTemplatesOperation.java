@@ -25,17 +25,19 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 	private List<BooleanMatrix> templates;
 	private double minimumScale, maximumScale;
 	private double minimumMatchPercentage;
+	private HashMap<Color, Integer> groupSizes;
 
 	
 	
 	@Override
 	public String name() { return "Open CV Match Templates"; }
 
-	public OCVMatchTemplatesOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage) {
+	public OCVMatchTemplatesOperation(List<BooleanMatrix> templates, double minimumScale, double maximumScale, double minimumMatchPercentage, HashMap<Color, Integer> groupSizes) {
 		this.templates = templates;
 		this.minimumScale = minimumScale;
 		this.maximumScale = maximumScale;
 		this.minimumMatchPercentage = minimumMatchPercentage;
+		this.groupSizes = groupSizes;
 	}
 
 
@@ -51,7 +53,6 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 		
 		List<Point> centers = findCenters(m);
 		List<Double> scaleFactors = generateScaleFactors(minimumScale, maximumScale, stepSize);
-		HashMap<Color, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
 		
 		// pre-scale the templates to save a few CPU cycles
 		HashMap<Double, List<BooleanMatrix>> scaledTemplates = new HashMap<>();
@@ -83,7 +84,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 					double matchPercentage = 0;
 					if (groupColor != null) {
-						matchPercentage = getMatchPercentage(m, scaledTemplate, center, groupColor, groupsToCount);
+						matchPercentage = getMatchPercentage(m, scaledTemplate, center, groupColor, groupSizes);
 					}
 					
 					if (matchPercentage < minimumMatchPercentage) {
@@ -113,10 +114,11 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 	private void removeGroup(Mat m, Color groupColor) {
 
+		int[] pixel = new int[3];
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 
-				double[] pixel = m.get(r, c);
+				m.get(r, c, pixel);
 				
 				if (pixel[0] == groupColor.r && pixel[1] == groupColor.g && pixel[2] == groupColor.b) {
 					m.put(r, c, blackPixel);
@@ -129,10 +131,11 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 		HashMap<Color, CenterSum> groupsCenter = new HashMap<>();
 
+		int[] pixel = new int[3];
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
 
-				double[] pixel = m.get(r, c);
+				m.get(r, c, pixel);
 
 				if (!MatrixUtilities.isBlackPixel(pixel)) {
 					
@@ -204,6 +207,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 			// find the first non-black pixel closest to the the center.
 			// search outward from the center 
 			
+			int[] pixel = new int[3];
 			for (int offsetR = 1; offsetR < m.rows(); offsetR++) {
 				for (int offsetC = 1; offsetC < m.cols(); offsetC++) {
 
@@ -215,7 +219,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 						// search the left vertical side
 						if (MatrixUtilities.isInImage(r, topLeftCorner.getX(), m.rows(), m.cols())) {
-							double[] pixel = m.get(r, topLeftCorner.getX());
+							m.get(r, topLeftCorner.getX(), pixel);
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
 								return new Color(pixel);
 							}
@@ -223,7 +227,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 						// search the right vertical side
 						if (MatrixUtilities.isInImage(r, bottomRightCorner.getX(), m.rows(), m.cols())) {
-							double[] pixel = m.get(r, bottomRightCorner.getX());
+							m.get(r, bottomRightCorner.getX(), pixel);
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
 								return new Color(pixel);
 							}
@@ -233,7 +237,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 					for (int c = topLeftCorner.getX(); c < bottomRightCorner.getX(); ++c) {
 						// search the top row
 						if (MatrixUtilities.isInImage(topLeftCorner.getY(), c, m.rows(), m.cols())) {
-							double[] pixel = m.get(topLeftCorner.getY(), c);
+							m.get(topLeftCorner.getY(), c, pixel);
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
 								return new Color(pixel);
 							}
@@ -241,7 +245,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 						// search the bottom row
 						if (MatrixUtilities.isInImage(bottomRightCorner.getY(), c, m.rows(), m.cols())) {
-							double[] pixel = m.get(bottomRightCorner.getY(), c);
+							m.get(bottomRightCorner.getY(), c, pixel);
 							if (!MatrixUtilities.isBlackPixel(pixel)) {
 								return new Color(pixel);
 							}
@@ -261,6 +265,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 
 		int matchCount = 0;
 		
+		int[] pixel = new int[3];
 		for (int r = 0; r < template.rows(); r++) {
 			for (int c = 0; c < template.cols(); c++) {
 				
@@ -268,7 +273,7 @@ public class OCVMatchTemplatesOperation implements OpenCVOperation {
 				int imageC = c + center.getX() - template.cols() / 2;
 				
 				if (MatrixUtilities.isInImage(imageR,  imageC, m.rows(), m.cols())) {
-					double[] pixel = m.get(imageR, imageC);
+					m.get(imageR, imageC, pixel);
 					if (!MatrixUtilities.isBlackPixel(pixel)) {
 						if (pixel[0] == groupColor.r && pixel[1] == groupColor.g && pixel[2] == groupColor.b) {
 							matchCount++;

@@ -42,10 +42,11 @@ public class OCVFindGroupsWithFillOperation implements OpenCVOperation {
 		// copy color channels
 		//
 		double[] colorValue = new double[3];
+		double[] binaryValue = new double[1];
 		Mat colorImage = new Mat(binaryImage.size(), CvType.CV_32SC3);
 		for (int y = 0; y < binaryImage.rows(); y++) {
 			for (int x = 0; x < binaryImage.cols(); x++) {
-				double[] binaryValue = binaryImage.get(y, x);
+				binaryImage.get(y, x, binaryValue);
 				colorValue[0] = binaryValue[0];
 				colorValue[1] = binaryValue[0];
 				colorValue[2] = binaryValue[0];

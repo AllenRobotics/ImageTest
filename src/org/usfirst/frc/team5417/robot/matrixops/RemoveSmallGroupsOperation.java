@@ -13,11 +13,13 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 public class RemoveSmallGroupsOperation implements MatrixOperation {
 
 	private int minimumGroupPixelCount;
-
+	private HashMap<Pixel, Integer> groupSizes;
+	
 	public String name() { return "Remove Small Groups"; } 
 
-	public RemoveSmallGroupsOperation(int minimumGroupPixelCount) {
+	public RemoveSmallGroupsOperation(int minimumGroupPixelCount, HashMap<Pixel, Integer> groupSizes) {
 		this.minimumGroupPixelCount = minimumGroupPixelCount;
+		this.groupSizes = groupSizes;
 	}
 
 	@Override
@@ -35,12 +37,10 @@ public class RemoveSmallGroupsOperation implements MatrixOperation {
 
 		PixelMatrix result = m;
 
-
-		HashMap<Pixel, Integer> groupsToCount = MatrixUtilities.getGroupSizes(m);
 		HashSet<Pixel> colorsToRemove = new HashSet<>();
 
-		for (Pixel color : groupsToCount.keySet()) {
-			Integer count = groupsToCount.get(color);
+		for (Pixel color : groupSizes.keySet()) {
+			Integer count = groupSizes.get(color);
 
 			if (count < minimumGroupPixelCount) {
 				// NOTE: we MUST make a new Pixel here because we mutate the pixels

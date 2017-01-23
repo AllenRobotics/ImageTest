@@ -21,6 +21,26 @@ public class Color {
 		put(rgb);
 	}
 	
+	public Color(float[] rgb) {
+		put(rgb);
+	}
+
+	public Color(int[] rgb) {
+		put(rgb);
+	}
+
+	public void put(float[] rgb) {
+		this.r = (int)rgb[0];
+		this.g = (int)rgb[1];
+		this.b = (int)rgb[2];
+	}
+
+	public void put(int[] rgb) {
+		this.r = rgb[0];
+		this.g = rgb[1];
+		this.b = rgb[2];
+	}
+
 	public void put(double[] rgb) {
 		this.r = (int)rgb[0];
 		this.g = (int)rgb[1];

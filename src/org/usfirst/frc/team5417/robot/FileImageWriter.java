@@ -1,4 +1,5 @@
-package org.usfirst.frc.team5417.robot.opencvops;
+package org.usfirst.frc.team5417.robot;
+
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,16 +11,15 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5417.robot.ImageWriter;
 
 //
 // Write an image to a file
 //
-public class OCVFileImageWriter implements ImageWriter {
+public class FileImageWriter implements ImageWriter {
 
 	private String fileName;
 
-	public OCVFileImageWriter(String fileName) {
+	public FileImageWriter(String fileName) {
 		this.fileName = fileName;
 	}
 
@@ -27,7 +27,7 @@ public class OCVFileImageWriter implements ImageWriter {
 	public void write(Mat m) {
 
 		Highgui.imwrite(fileName, m);
-		
+
 	}
 
 }

@@ -155,6 +155,22 @@ public class MatrixUtilities {
 		}
 	}
 
+	public static boolean isBlackPixel(float[] pixel) {
+		if (pixel[0] == 0 && pixel[1] == 0 && pixel[2] == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static boolean isBlackPixel(int[] pixel) {
+		if (pixel[0] == 0 && pixel[1] == 0 && pixel[2] == 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public static boolean isBlackPixel(double[] pixel) {
 		if (pixel[0] == 0 && pixel[1] == 0 && pixel[2] == 0) {
 			return true;
