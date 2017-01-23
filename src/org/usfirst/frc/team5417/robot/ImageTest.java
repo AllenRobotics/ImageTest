@@ -117,12 +117,12 @@ public class ImageTest {
 		List<OpenCVOperation> operations = new ArrayList<OpenCVOperation>();
 
 		List<BooleanMatrix> horizontalTemplates = new ArrayList<BooleanMatrix>();
-		horizontalTemplates.add(new BooleanMatrix(80, 300, true));
-		horizontalTemplates.add(new BooleanMatrix(40, 300, true));
+		horizontalTemplates.add(new BooleanMatrix(40, 150, true));
+		horizontalTemplates.add(new BooleanMatrix(20, 150, true));
 
 		List<BooleanMatrix> verticalTemplates = new ArrayList<BooleanMatrix>();
-		verticalTemplates.add(new BooleanMatrix(300, 80, true));
-		verticalTemplates.add(new BooleanMatrix(300, 40, true));
+		verticalTemplates.add(new BooleanMatrix(150, 40, true));
+		verticalTemplates.add(new BooleanMatrix(150, 20, true));
 
 		// filter colors
 		operations.add(new OCVFilterColorOperation(
@@ -217,12 +217,12 @@ public class ImageTest {
 	
 
 		List<BooleanMatrix> horizontalTemplates = new ArrayList<BooleanMatrix>();
-		horizontalTemplates.add(new BooleanMatrix(80, 300, true));
-		horizontalTemplates.add(new BooleanMatrix(40, 300, true));
+		horizontalTemplates.add(new BooleanMatrix(40, 150, true));
+		horizontalTemplates.add(new BooleanMatrix(20, 150, true));
 
 		List<BooleanMatrix> verticalTemplates = new ArrayList<BooleanMatrix>();
-		verticalTemplates.add(new BooleanMatrix(300, 80, true));
-		verticalTemplates.add(new BooleanMatrix(300, 40, true));
+		verticalTemplates.add(new BooleanMatrix(150, 40, true));
+		verticalTemplates.add(new BooleanMatrix(150, 20, true));
 
 		
 		// filter colors
