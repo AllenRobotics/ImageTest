@@ -45,7 +45,7 @@ public class Stopwatch {
 
     public void start() {
     	if (start == 0) {
-    		start = System.currentTimeMillis();
+    		start = System.nanoTime();
     	}
     }
 
@@ -71,7 +71,7 @@ public class Stopwatch {
      * @return elapsed CPU time (in seconds) since the stopwatch was created
      */
     private double elapsedSeconds() {
-        long now = System.currentTimeMillis();
-        return (now - start) / 1000.0;
+        long now = System.nanoTime();
+        return (now - start) / 1000000000.0;
     }
 } 
