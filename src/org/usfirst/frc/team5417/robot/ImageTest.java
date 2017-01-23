@@ -77,7 +77,7 @@ public class ImageTest {
 					+ decimalFormat.format(endElapsedSeconds - startElapsedSeconds) + " seconds");
 
 			ImageWriter operationWriter = new FileImageWriter(
-					"C:/temp/" + logPrefix + "-operation-step-" + operationNumber + ".bmp");
+					"C:/temp/" + logPrefix + "-operation-step-" + operationNumber + ".png");
 			operationWriter.write(m);
 		}
 
@@ -101,7 +101,7 @@ public class ImageTest {
 
 			Mat tempM = pixelMatrix.toMat();
 			ImageWriter operationWriter = new FileImageWriter(
-					"C:/temp/" + logPrefix + "-operation-step-" + operationNumber + ".bmp");
+					"C:/temp/" + logPrefix + "-operation-step-" + operationNumber + ".png");
 			operationWriter.write(tempM);
 		}
 
@@ -116,6 +116,12 @@ public class ImageTest {
 
 		Mat m = reader.read();
 
+		if (print) {
+			Mat tempM = new PixelMatrix(m).toMat();
+			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
+			writer.write(tempM);
+		}
+		
 		// m = MatrixUtilities.reverseColorChannels(m);
 		PixelMatrix pixelMatrix = new PixelMatrix(m);
 
@@ -201,6 +207,12 @@ public class ImageTest {
 
 		Mat m = reader.read();
 
+		if (print) {
+			Mat tempM = new PixelMatrix(m).toMat();
+			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
+			writer.write(tempM);
+		}
+		
 		m = MatrixUtilities.reverseColorChannels(m);
 
 		// filter colors
@@ -272,8 +284,14 @@ public class ImageTest {
 
 		Mat m = reader.read();
 
-		m = MatrixUtilities.reverseColorChannels(m);
+		if (print) {
+			Mat tempM = new PixelMatrix(m).toMat();
+			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
+			writer.write(tempM);
+		}
 
+		m = MatrixUtilities.reverseColorChannels(m);
+		
 		// filter colors
 		OpenCVOperation filterOp = new OCVFilterColorOperation(new ChannelRange(10, 60), new ChannelRange(140, 210),
 				new ChannelRange(40, 110));

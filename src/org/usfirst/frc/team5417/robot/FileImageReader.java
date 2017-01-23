@@ -51,30 +51,30 @@ public class FileImageReader implements ImageReader {
 			Mat doubleMat = new Mat(rowcount, colcount, CvType.CV_16UC3);
 			m.assignTo(doubleMat, CvType.CV_16UC3);
 			
-//			// resize the image if necessary
-//			if (colcount > largestDimensionSize || rowcount > largestDimensionSize) {
-//				
-//				double scaleFactor;
-//				
-//				if (colcount > rowcount) {
-//					scaleFactor = (double)largestDimensionSize / colcount;
-//				}
-//				else {
-//					scaleFactor = (double)largestDimensionSize / rowcount;
-//				}
-//				
-//				colcount = (int)(colcount * scaleFactor);
-//				rowcount = (int)(rowcount * scaleFactor);
-//
-//				Size size = new Size(colcount, rowcount);
-//				Mat resizedMat = new Mat(size, CvType.CV_16UC3);
-//				Imgproc.resize(doubleMat, resizedMat, size);
-//				
-//				return resizedMat;
-//			}
-//			else {
+			// resize the image if necessary
+			if (colcount > largestDimensionSize || rowcount > largestDimensionSize) {
+				
+				double scaleFactor;
+				
+				if (colcount > rowcount) {
+					scaleFactor = (double)largestDimensionSize / colcount;
+				}
+				else {
+					scaleFactor = (double)largestDimensionSize / rowcount;
+				}
+				
+				colcount = (int)(colcount * scaleFactor);
+				rowcount = (int)(rowcount * scaleFactor);
+
+				Size size = new Size(colcount, rowcount);
+				Mat resizedMat = new Mat(size, CvType.CV_16UC3);
+				Imgproc.resize(doubleMat, resizedMat, size);
+				
+				return resizedMat;
+			}
+			else {
 				return doubleMat;
-//			}
+			}
 
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
