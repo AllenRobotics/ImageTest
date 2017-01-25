@@ -14,6 +14,7 @@ import javax.imageio.ImageIO;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
 //
@@ -31,61 +32,41 @@ public class FileImageReader implements ImageReader {
 
 	@Override
 	public Mat read() {
-		File initialFile = new File(fileName);
 
-		try {
-			InputStream imageFileStream = new FileInputStream(initialFile);
+		Mat m = Highgui.imread(fileName);
 
-			BufferedImage image = ImageIO.read(imageFileStream);
-
-			byte[] pixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-
-			int colcount = image.getWidth();
-			int rowcount = image.getHeight();
+		int colcount = m.cols();
+		int rowcount = m.rows();
+		
+		Mat threeChannel = m;
+		
+		// the rows/cols are swapped here intentionally
+		Mat doubleMat = new Mat(rowcount, colcount, CvType.CV_16UC3);
+		threeChannel.assignTo(doubleMat, CvType.CV_16UC3);
+		
+		// resize the image if necessary
+		if (colcount > largestDimensionSize || rowcount > largestDimensionSize) {
 			
-			// the rows/cols are swapped here intentionally
-			Mat m = new Mat(rowcount, colcount, CvType.CV_8UC3);
-			m.put(0, 0, pixels);
-
-			// the rows/cols are swapped here intentionally
-			Mat doubleMat = new Mat(rowcount, colcount, CvType.CV_16UC3);
-			m.assignTo(doubleMat, CvType.CV_16UC3);
+			double scaleFactor;
 			
-			// resize the image if necessary
-			if (colcount > largestDimensionSize || rowcount > largestDimensionSize) {
-				
-				double scaleFactor;
-				
-				if (colcount > rowcount) {
-					scaleFactor = (double)largestDimensionSize / colcount;
-				}
-				else {
-					scaleFactor = (double)largestDimensionSize / rowcount;
-				}
-				
-				colcount = (int)(colcount * scaleFactor);
-				rowcount = (int)(rowcount * scaleFactor);
-
-				Size size = new Size(colcount, rowcount);
-				Mat resizedMat = new Mat(size, CvType.CV_16UC3);
-				Imgproc.resize(doubleMat, resizedMat, size);
-				
-				return resizedMat;
+			if (colcount > rowcount) {
+				scaleFactor = (double)largestDimensionSize / colcount;
 			}
 			else {
-				return doubleMat;
+				scaleFactor = (double)largestDimensionSize / rowcount;
 			}
+			
+			colcount = (int)(colcount * scaleFactor);
+			rowcount = (int)(rowcount * scaleFactor);
 
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			throw new IllegalArgumentException("File does not exist");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-
-			throw new IllegalArgumentException("File does not exist");
+			Size size = new Size(colcount, rowcount);
+			Mat resizedMat = new Mat(size, CvType.CV_16UC3);
+			Imgproc.resize(doubleMat, resizedMat, size);
+			
+			return resizedMat;
+		}
+		else {
+			return doubleMat;
 		}
 	}
 

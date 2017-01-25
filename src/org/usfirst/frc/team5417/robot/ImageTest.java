@@ -29,6 +29,16 @@ public class ImageTest {
 
 		List<BooleanMatrix> templatesToUse = horizontalTemplates;
 
+		// Real images
+		ChannelRange redRange = new ChannelRange(0, 30);
+		ChannelRange greenRange = new ChannelRange(230, 255);
+		ChannelRange blueRange = new ChannelRange(140, 200);
+
+		// Test images
+//		ChannelRange redRange = new ChannelRange(10, 55);
+//		ChannelRange greenRange = new ChannelRange(150, 200);
+//		ChannelRange blueRange = new ChannelRange(50, 100);
+
 		int dilateErodeKernelSize = 11;
 		int removeGroupsSmallerThan = 100;
 		double minimumTemplateScale = 0.25, maximumTemplateScale = 4;
@@ -37,27 +47,33 @@ public class ImageTest {
 		//
 		// warm up the jvm with JIT and stuff
 		//
-		DoMixtureOperations(imageReader, false, dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, templatesToUse);
-		DoPixelMatrixOperations(imageReader, false, dilateErodeKernelSize, removeGroupsSmallerThan,
-				minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage, templatesToUse);
-		DoOpenCVOperations(imageReader, false, dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, templatesToUse);
+		DoMixtureOperations(imageReader, redRange, greenRange, blueRange, false, dilateErodeKernelSize,
+				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
+				templatesToUse);
+		DoPixelMatrixOperations(imageReader, redRange, greenRange, blueRange, false, dilateErodeKernelSize,
+				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
+				templatesToUse);
+		DoOpenCVOperations(imageReader, redRange, greenRange, blueRange, false, dilateErodeKernelSize,
+				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
+				templatesToUse);
 
 		//
 		// print results after warm up
 		//
 
-		DoPixelMatrixOperations(imageReader, true, dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, templatesToUse);
+		DoPixelMatrixOperations(imageReader, redRange, greenRange, blueRange, true, dilateErodeKernelSize,
+				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
+				templatesToUse);
 		System.out.println();
 
-		DoOpenCVOperations(imageReader, true, dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, templatesToUse);
+		DoOpenCVOperations(imageReader, redRange, greenRange, blueRange, true, dilateErodeKernelSize,
+				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
+				templatesToUse);
 		System.out.println();
 
-		DoMixtureOperations(imageReader, true, dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, templatesToUse);
+		DoMixtureOperations(imageReader, redRange, greenRange, blueRange, true, dilateErodeKernelSize,
+				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
+				templatesToUse);
 		System.out.println();
 	}
 
@@ -108,9 +124,10 @@ public class ImageTest {
 		return pixelMatrix;
 	}
 
-	private static void DoPixelMatrixOperations(ImageReader reader, boolean print, int dilateErodeKernelSize,
-			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
-			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
+	private static void DoPixelMatrixOperations(ImageReader reader, ChannelRange redRange, ChannelRange greenRange,
+			ChannelRange blueRange, boolean print, int dilateErodeKernelSize, int removeGroupsSmallerThan,
+			double minimumTemplateScale, double maximumTemplateScale, double minimumTemplateMatchPercentage,
+			List<BooleanMatrix> templatesToUse) {
 
 		String logPrefix = "PixelMatrix";
 
@@ -122,14 +139,13 @@ public class ImageTest {
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
 			writer.write(tempM);
 		}
-	
+
 		PixelMatrix pixelMatrix = new PixelMatrix(m);
 
 		List<MatrixOperation> operations = new ArrayList<MatrixOperation>();
 
 		// filter colors
-		MatrixOperation filterOp = new FilterColorOperation(new ChannelRange(10, 60), new ChannelRange(140, 210),
-				new ChannelRange(40, 110));
+		MatrixOperation filterOp = new FilterColorOperation(redRange, greenRange, blueRange);
 
 		// convert to gray scale
 		MatrixOperation grayScaleOp = new GrayScaleOperation();
@@ -199,9 +215,10 @@ public class ImageTest {
 		}
 	}
 
-	private static void DoOpenCVOperations(ImageReader reader, boolean print, int dilateErodeKernelSize,
-			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
-			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
+	private static void DoOpenCVOperations(ImageReader reader, ChannelRange redRange, ChannelRange greenRange,
+			ChannelRange blueRange, boolean print, int dilateErodeKernelSize, int removeGroupsSmallerThan,
+			double minimumTemplateScale, double maximumTemplateScale, double minimumTemplateMatchPercentage,
+			List<BooleanMatrix> templatesToUse) {
 
 		String logPrefix = "OpenCV";
 
@@ -215,8 +232,7 @@ public class ImageTest {
 		}
 
 		// filter colors
-		OpenCVOperation filterOp = new OCVFilterColorOperation(new ChannelRange(10, 60), new ChannelRange(140, 210),
-				new ChannelRange(40, 110));
+		OpenCVOperation filterOp = new OCVFilterColorOperation(redRange, greenRange, blueRange);
 
 		// dilate the white areas in the image to "heal" broken lines
 		OpenCVOperation dilateOp = new OCVDilationOperation(dilateErodeKernelSize);
@@ -275,9 +291,10 @@ public class ImageTest {
 		}
 	}
 
-	private static void DoMixtureOperations(ImageReader reader, boolean print, int dilateErodeKernelSize,
-			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
-			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
+	private static void DoMixtureOperations(ImageReader reader, ChannelRange redRange, ChannelRange greenRange,
+			ChannelRange blueRange, boolean print, int dilateErodeKernelSize, int removeGroupsSmallerThan,
+			double minimumTemplateScale, double maximumTemplateScale, double minimumTemplateMatchPercentage,
+			List<BooleanMatrix> templatesToUse) {
 
 		String logPrefix = "Mixture";
 
@@ -289,10 +306,9 @@ public class ImageTest {
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
 			writer.write(tempM);
 		}
-		
+
 		// filter colors
-		OpenCVOperation filterOp = new OCVFilterColorOperation(new ChannelRange(10, 60), new ChannelRange(140, 210),
-				new ChannelRange(40, 110));
+		OpenCVOperation filterOp = new OCVFilterColorOperation(redRange, greenRange, blueRange);
 
 		// // dilate the white areas in the image to "heal" broken lines
 		OpenCVOperation dilateOp = new OCVDilationOperation(dilateErodeKernelSize);
