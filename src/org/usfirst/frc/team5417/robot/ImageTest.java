@@ -35,11 +35,11 @@ public class ImageTest {
 		ChannelRange blueRange = new ChannelRange(140, 200);
 
 		// Test images
-//		ChannelRange redRange = new ChannelRange(10, 55);
-//		ChannelRange greenRange = new ChannelRange(150, 200);
-//		ChannelRange blueRange = new ChannelRange(50, 100);
+		// ChannelRange redRange = new ChannelRange(10, 55);
+		// ChannelRange greenRange = new ChannelRange(150, 200);
+		// ChannelRange blueRange = new ChannelRange(50, 100);
 
-		int dilateErodeKernelSize = 11; 
+		int dilateErodeKernelSize = 11;
 		int removeGroupsSmallerThan = 100;
 		double minimumTemplateScale = 0.25, maximumTemplateScale = 4;
 		double minimumTemplateMatchPercentage = 0.7;
@@ -213,6 +213,17 @@ public class ImageTest {
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-outputImage.png");
 			writer.write(tempM);
 		}
+
+		if (print) {
+			double distance = 0;
+			try {
+				FindDistanceOperation findDistanceOp = new FindDistanceOperation();
+				distance = findDistanceOp.findDistance(pixelMatrix);
+				System.out.println("distance equals " + distance);
+			} catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
 	}
 
 	private static void DoOpenCVOperations(ImageReader reader, ChannelRange redRange, ChannelRange greenRange,
@@ -288,6 +299,19 @@ public class ImageTest {
 
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-outputImage.png");
 			writer.write(m);
+		}
+
+		if (print) {
+			double distance = 0;
+			try {
+				PixelMatrix pixelMatrix = new PixelMatrix(m);
+
+				FindDistanceOperation findDistanceOp = new FindDistanceOperation();
+				distance = findDistanceOp.findDistance(pixelMatrix);
+				System.out.println("distance equals " + distance);
+			} catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
 		}
 	}
 
@@ -377,6 +401,17 @@ public class ImageTest {
 			m = pixelMatrix.toMat();
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-outputImage.png");
 			writer.write(m);
+		}
+
+		if (print) {
+			double distance = 0;
+			try {
+				FindDistanceOperation findDistanceOp = new FindDistanceOperation();
+				distance = findDistanceOp.findDistance(pixelMatrix);
+				System.out.println("distance equals " + distance);
+			} catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
 		}
 	}
 }
