@@ -39,7 +39,7 @@ public class ImageTest {
 //		ChannelRange greenRange = new ChannelRange(150, 200);
 //		ChannelRange blueRange = new ChannelRange(50, 100);
 
-		int dilateErodeKernelSize = 11;
+		int dilateErodeKernelSize = 11; 
 		int removeGroupsSmallerThan = 100;
 		double minimumTemplateScale = 0.25, maximumTemplateScale = 4;
 		double minimumTemplateMatchPercentage = 0.7;
