@@ -25,15 +25,6 @@ public class RemoveSmallGroupsOperation implements MatrixOperation {
 	@Override
 	public PixelMatrix doOperation(PixelMatrix m) {
 
-//		PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
-//		for (int r = 0; r < m.rows(); r++) {
-//			for (int c = 0; c < m.cols(); c++) {
-//
-//				Pixel pixel = m.get(r, c);
-//				result.put(r, c, pixel);
-//
-//			}
-//		}
 
 		PixelMatrix result = m;
 

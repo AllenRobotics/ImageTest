@@ -231,4 +231,41 @@ public class MatrixUtilities {
 		return groupsToCount;
 	}
 
+	public static HashMap<Pixel, Point> findCentersOfMass(PixelMatrix m){
+		HashMap<Pixel, CenterOfMass> masses = new HashMap<>();
+
+		for (int y = 0; y < m.rows(); y++) {
+			for (int x = 0; x < m.cols(); x++) {
+
+				Pixel pixel = m.get(y, x);
+				if (!MatrixUtilities.isBlackPixel(pixel)) {
+					if (masses.containsKey(pixel)) {
+						// We need to update the group
+						CenterOfMass mass = masses.get(pixel);
+						mass.x = mass.x + x;
+						mass.y = mass.y + y;
+						mass.numberOfPixels++;
+					} else {
+						// We need to add the group with the HashMap
+						CenterOfMass mass = new CenterOfMass(x, y, 1);
+						masses.put(pixel, mass);
+
+					}
+				}
+
+			}
+		}
+		HashMap<Pixel, Point> findResults = new HashMap<>();
+
+		for (Pixel pixel : masses.keySet()) {
+			CenterOfMass mass = masses.get(pixel);
+			mass.x = mass.x / mass.numberOfPixels;
+			mass.y = mass.y / mass.numberOfPixels;
+
+			findResults.put(pixel, new Point(mass.x, mass.y));
+
+		}
+		return findResults;
+
+	}
 }
