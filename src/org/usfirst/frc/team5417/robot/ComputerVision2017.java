@@ -27,7 +27,7 @@ public class ComputerVision2017 {
 	public ComputerVisionResult DoComputerVision(ImageReader reader, int largestDimensionSize, ChannelRange redRange,
 			ChannelRange greenRange, ChannelRange blueRange, int dilateErodeKernelSize,
 			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
-			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
+			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) throws Exception {
 
 		Mat m = reader.read();
 
@@ -73,26 +73,19 @@ public class ComputerVision2017 {
 		pixelMatrix = matchTemplatesOp.doOperation(pixelMatrix);
 
 		ComputerVisionResult cvResult = new ComputerVisionResult();
-		try {
-			HashMap<Pixel, Point> centersOfMass = MatrixUtilities.findCentersOfMass(pixelMatrix);
-			FindDistanceOperation findDistanceOp = new FindDistanceOperation(centersOfMass);
 
-			cvResult.distance = findDistanceOp.findDistance(pixelMatrix) * scaleOp.getInverseScaleFactor();
+		HashMap<Pixel, Point> centersOfMass = MatrixUtilities.findCentersOfMass(pixelMatrix);
+		FindDistanceOperation findDistanceOp = new FindDistanceOperation(centersOfMass);
 
-			FindTargetPointOperation findTargetOp = new FindTargetPointOperation(centersOfMass);
-			cvResult.targetPoint = findTargetOp.findTargetPoint();
-			cvResult.targetPoint = cvResult.targetPoint.adjustByScale(scaleOp.getInverseScaleFactor());
+		cvResult.distance = findDistanceOp.findDistance(pixelMatrix) * scaleOp.getInverseScaleFactor();
 
-			cvResult.visionResult = pixelMatrix.toMat();
+		FindTargetPointOperation findTargetOp = new FindTargetPointOperation(centersOfMass);
+		cvResult.targetPoint = findTargetOp.findTargetPoint();
+		cvResult.targetPoint = cvResult.targetPoint.adjustByScale(scaleOp.getInverseScaleFactor());
 
-			cvResult.didSucceed = true;
+		cvResult.visionResult = pixelMatrix.toMat();
 
-		} catch (Exception ex) {
-
-			cvResult.didSucceed = false;
-
-			System.err.println(ex.getMessage());
-		}
+		cvResult.didSucceed = true;
 
 		return cvResult;
 	}
