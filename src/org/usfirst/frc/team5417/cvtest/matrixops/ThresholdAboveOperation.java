@@ -1,14 +1,17 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.cvtest.matrixops;
 
 import org.opencv.core.Mat;
-import org.usfirst.frc.team5417.robot.MatrixUtilities;
+import org.usfirst.frc.team5417.cv2017.customops.Pixel;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrixOperation;
+import org.usfirst.frc.team5417.cv2017.MatrixUtilities;
 
 //
 // Threshold above a certain value, turning the output pixels white.
 // Input: a grayscale image
 // Output: a binarized (black or white) image.
 //
-public class ThresholdAboveOperation implements MatrixOperation {
+public class ThresholdAboveOperation implements PixelMatrixOperation {
 
 	private int threshold;
 

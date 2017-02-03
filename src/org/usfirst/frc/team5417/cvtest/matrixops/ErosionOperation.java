@@ -1,17 +1,22 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.cvtest.matrixops;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.usfirst.frc.team5417.robot.MatrixUtilities;
+import org.usfirst.frc.team5417.cv2017.customops.BooleanMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.Pixel;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrixOperation;
+import org.usfirst.frc.team5417.cv2017.customops.Point;
+import org.usfirst.frc.team5417.cv2017.MatrixUtilities;
 
 //
 //Erodes the white pixels in an image, given a kernel size
 //Input: a binarized image (black and white)
 //Output: a binarized image, with the white regions eroded
 //
-public class ErosionOperation implements MatrixOperation {
+public class ErosionOperation implements PixelMatrixOperation {
 
 	private int regionWidth;
 

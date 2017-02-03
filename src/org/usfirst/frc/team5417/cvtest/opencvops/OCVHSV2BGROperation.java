@@ -1,7 +1,8 @@
-package org.usfirst.frc.team5417.robot.opencvops;
+package org.usfirst.frc.team5417.cvtest.opencvops;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.usfirst.frc.team5417.cv2017.opencvops.OpenCVOperation;
 
 public class OCVHSV2BGROperation implements OpenCVOperation {
 

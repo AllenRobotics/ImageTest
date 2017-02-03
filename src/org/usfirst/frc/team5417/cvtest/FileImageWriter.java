@@ -1,4 +1,5 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.cvtest;
+
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -10,7 +11,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5417.robot.ImageWriter;
+import org.usfirst.frc.team5417.cv2017.ImageWriter;
 
 //
 // Write an image to a file

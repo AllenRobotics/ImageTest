@@ -1,14 +1,17 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.cvtest.matrixops;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
+import org.usfirst.frc.team5417.cv2017.customops.Pixel;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrixOperation;
 
 //
 // Convert to grayscale
 // Input: a color image
 // Output: a grayscale image
 //
-public class GrayScaleOperation implements MatrixOperation {
+public class GrayScaleOperation implements PixelMatrixOperation {
 
 	public String name() { return "GrayScale"; } 
 

@@ -1,13 +1,15 @@
-package org.usfirst.frc.team5417.robot.opencvops;
+package org.usfirst.frc.team5417.cvtest.opencvops;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.usfirst.frc.team5417.robot.MatrixUtilities;
-import org.usfirst.frc.team5417.robot.matrixops.Pixel;
-import org.usfirst.frc.team5417.robot.matrixops.PixelMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.Pixel;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
+import org.usfirst.frc.team5417.cv2017.opencvops.Color;
+import org.usfirst.frc.team5417.cv2017.opencvops.OpenCVOperation;
+import org.usfirst.frc.team5417.cv2017.MatrixUtilities;
 
 public class OCVRemoveSmallGroupsOperation implements OpenCVOperation {
 

@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot;
+package org.usfirst.frc.team5417.cvtest;
 
 
 import java.awt.image.BufferedImage;
@@ -16,6 +16,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
+import org.usfirst.frc.team5417.cv2017.ImageReader;
 
 //
 // Read an image from a file

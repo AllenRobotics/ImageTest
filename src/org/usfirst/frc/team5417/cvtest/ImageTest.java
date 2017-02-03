@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot;
+package org.usfirst.frc.team5417.cvtest;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -8,8 +8,11 @@ import java.util.List;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
-import org.usfirst.frc.team5417.robot.matrixops.*;
-import org.usfirst.frc.team5417.robot.opencvops.*;
+import org.usfirst.frc.team5417.cv2017.*;
+import org.usfirst.frc.team5417.cv2017.customops.*;
+import org.usfirst.frc.team5417.cv2017.opencvops.*;
+import org.usfirst.frc.team5417.cvtest.matrixops.*;
+import org.usfirst.frc.team5417.cvtest.opencvops.*;
 
 public class ImageTest {
 
@@ -118,7 +121,7 @@ public class ImageTest {
 		return m;
 	}
 
-	private static PixelMatrix DoPixelMatrixOperation(MatrixOperation op, PixelMatrix pixelMatrix, int operationNumber,
+	private static PixelMatrix DoPixelMatrixOperation(PixelMatrixOperation op, PixelMatrix pixelMatrix, int operationNumber,
 			Stopwatch elapsedTimeStopwatch, DecimalFormat decimalFormat, String logPrefix, boolean print) {
 
 		double startElapsedSeconds = elapsedTimeStopwatch.getTotalSeconds();
@@ -410,7 +413,7 @@ public class ImageTest {
 		OpenCVOperation erodeOp = new OCVErosionOperation(dilateErodeKernelSize);
 
 		// find groups (operates on gray scale, outputs color)
-		MatrixOperation findGroupsOp = new FindGroupsOperation();
+		PixelMatrixOperation findGroupsOp = new FindGroupsOperation();
 
 		DecimalFormat decimalFormat = new DecimalFormat("0.000000");
 		Stopwatch elapsedSecondsStopwatch = new Stopwatch();
@@ -450,10 +453,10 @@ public class ImageTest {
 					"getGroupSizes took " + decimalFormat.format(endElapsedSeconds - startElapsedSeconds) + " seconds");
 
 		// remove all groups with too few pixels
-		MatrixOperation removeGroupsOp = new RemoveSmallGroupsOperation(removeGroupsSmallerThan, groupSizes);
+		PixelMatrixOperation removeGroupsOp = new RemoveSmallGroupsOperation(removeGroupsSmallerThan, groupSizes);
 
 		// remove all groups that don't match a template
-		MatrixOperation matchTemplatesOp = new MatchTemplatesOperation(templatesToUse, minimumTemplateScale,
+		PixelMatrixOperation matchTemplatesOp = new MatchTemplatesOperation(templatesToUse, minimumTemplateScale,
 				maximumTemplateScale, minimumTemplateMatchPercentage, groupSizes);
 
 		pixelMatrix = DoPixelMatrixOperation(removeGroupsOp, pixelMatrix, operationNumber++, elapsedSecondsStopwatch,

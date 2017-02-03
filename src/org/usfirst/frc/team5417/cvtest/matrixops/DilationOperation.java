@@ -1,18 +1,23 @@
-package org.usfirst.frc.team5417.robot.matrixops;
+package org.usfirst.frc.team5417.cvtest.matrixops;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import org.usfirst.frc.team5417.robot.MatrixUtilities;
-import org.usfirst.frc.team5417.robot.matrixops.FindGroupsOperation.DisjointSetNode;
+import org.usfirst.frc.team5417.cv2017.customops.BooleanMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.Pixel;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
+import org.usfirst.frc.team5417.cv2017.customops.PixelMatrixOperation;
+import org.usfirst.frc.team5417.cv2017.customops.Point;
+import org.usfirst.frc.team5417.cv2017.customops.FindGroupsOperation.DisjointSetNode;
+import org.usfirst.frc.team5417.cv2017.MatrixUtilities;
 
 //
 //Dilates the white pixels in an image, given a kernel size
 //Input: a binarized image (black and white)
 //Output: a binarized image, with the white regions dilated
 //
-public class DilationOperation implements MatrixOperation {
+public class DilationOperation implements PixelMatrixOperation {
 
 	private int regionWidth;
 

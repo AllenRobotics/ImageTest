@@ -1,4 +1,4 @@
-package org.usfirst.frc.team5417.robot.opencvops;
+package org.usfirst.frc.team5417.cvtest.opencvops;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.usfirst.frc.team5417.robot.Matrix;
+import org.usfirst.frc.team5417.cv2017.customops.Matrix;
+import org.usfirst.frc.team5417.cv2017.opencvops.Color;
+import org.usfirst.frc.team5417.cv2017.opencvops.OpenCVOperation;
 
 //
 // See https://en.wikipedia.org/wiki/Disjoint-set_data_structure
