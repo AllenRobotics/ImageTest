@@ -5,19 +5,19 @@ package org.usfirst.frc.team5417.robot;
 //
 public class ChannelRange {
 
-	private int lowerBound;
-	private int upperBound;
+	private double lowerBound;
+	private double upperBound;
 	
-	public ChannelRange(int lowerBound, int upperBound){
+	public ChannelRange(double lowerBound, double upperBound){
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 	}
 	
-	public int getLowerBound(){
+	public double getLowerBound(){
 		return lowerBound;
 	}
 	
-	public int getUpperBound(){
+	public double getUpperBound(){
 		return upperBound;
 	}
 	

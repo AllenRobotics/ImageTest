@@ -35,19 +35,18 @@ public class ImageScaleOperation {
 			else {
 				this.scaleFactor = (double)largestDimensionSize / m.rows();
 			}
-			
-			int colcount = (int)(m.cols() * this.scaleFactor);
-			int rowcount = (int)(m.rows() * this.scaleFactor);
-
-			Size size = new Size(colcount, rowcount);
-			Mat resizedMat = new Mat(size, CvType.CV_16UC3);
-			Imgproc.resize(this.m, resizedMat, size);
-			
-			return resizedMat;
 		}
 		else {
 			this.scaleFactor = 1.0;
-			return this.m;
-		}
+		}			
+		
+		int colcount = (int)(m.cols() * this.scaleFactor);
+		int rowcount = (int)(m.rows() * this.scaleFactor);
+
+		Size size = new Size(colcount, rowcount);
+		Mat resizedMat = new Mat(size, CvType.CV_32F);
+		Imgproc.resize(this.m, resizedMat, size);
+		
+		return resizedMat;
 	}
 }

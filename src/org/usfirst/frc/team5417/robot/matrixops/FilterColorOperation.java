@@ -11,16 +11,16 @@ import org.usfirst.frc.team5417.robot.MatrixUtilities;
 //
 public class FilterColorOperation implements MatrixOperation {
 
-	private ChannelRange redRange;
-	private ChannelRange greenRange;
-	private ChannelRange blueRange;
+	private ChannelRange c1Range;
+	private ChannelRange c2Range;
+	private ChannelRange c3Range;
 
 	public String name() { return "Filter Color"; } 
 
-	public FilterColorOperation(ChannelRange redRange, ChannelRange greenRange, ChannelRange blueRange) {
-		this.redRange = redRange;
-		this.greenRange = greenRange;
-		this.blueRange = blueRange;
+	public FilterColorOperation(ChannelRange c1Range, ChannelRange c2Range, ChannelRange c3Range) {
+		this.c1Range = c1Range;
+		this.c2Range = c2Range;
+		this.c3Range = c3Range;
 	}
 
 	@Override
@@ -29,9 +29,9 @@ public class FilterColorOperation implements MatrixOperation {
 		//PixelMatrix result = new PixelMatrix(m.rows(), m.cols());
 		PixelMatrix result = m;
 
-		int minRed = redRange.getLowerBound(), maxRed = redRange.getUpperBound();
-		int minGreen = greenRange.getLowerBound(), maxGreen = greenRange.getUpperBound();
-		int minBlue = blueRange.getLowerBound(), maxBlue = blueRange.getUpperBound();
+		double minRed = c1Range.getLowerBound(), maxRed = c1Range.getUpperBound();
+		double minGreen = c2Range.getLowerBound(), maxGreen = c2Range.getUpperBound();
+		double minBlue = c3Range.getLowerBound(), maxBlue = c3Range.getUpperBound();
 
 		for (int r = 0; r < m.rows(); ++r) {
 			for (int c = 0; c < m.cols(); ++c) {

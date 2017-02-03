@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 import org.usfirst.frc.team5417.robot.matrixops.*;
 import org.usfirst.frc.team5417.robot.opencvops.*;
 
@@ -34,10 +35,15 @@ public class ImageTest {
 		List<BooleanMatrix> templatesToUse = horizontalTemplates;
 
 		// Real images
-		ChannelRange redRange = new ChannelRange(0, 30);
-		ChannelRange greenRange = new ChannelRange(230, 255);
-		ChannelRange blueRange = new ChannelRange(140, 200);
+//		ChannelRange redRange = new ChannelRange(0, 30);
+//		ChannelRange greenRange = new ChannelRange(230, 255);
+//		ChannelRange blueRange = new ChannelRange(140, 200);
 
+		//Real images HSV
+		ChannelRange hueRange = new ChannelRange(130, 180);
+		ChannelRange satRange = new ChannelRange(.7, 1.0);
+		ChannelRange valRange = new ChannelRange(220, 256);
+		
 		// Test images
 		// ChannelRange redRange = new ChannelRange(10, 55);
 		// ChannelRange greenRange = new ChannelRange(150, 200);
@@ -51,7 +57,7 @@ public class ImageTest {
 		//
 		// warm up the jvm with JIT and stuff
 		//
-		DoMixtureOperations(imageReader, 400, redRange, greenRange, blueRange, false, dilateErodeKernelSize,
+		DoMixtureOperations(imageReader, 400, hueRange, satRange, valRange, false, dilateErodeKernelSize,
 				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
 				templatesToUse);
 		// DoPixelMatrixOperations(imageReader, redRange, greenRange, blueRange,
@@ -83,7 +89,7 @@ public class ImageTest {
 		// templatesToUse);
 		// System.out.println();
 
-		DoMixtureOperations(imageReader, 400, redRange, greenRange, blueRange, true, dilateErodeKernelSize,
+		DoMixtureOperations(imageReader, 400, hueRange, satRange, valRange, true, dilateErodeKernelSize,
 				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
 				templatesToUse);
 		System.out.println();
@@ -363,8 +369,8 @@ public class ImageTest {
 	// }
 	// }
 
-	private static void DoMixtureOperations(ImageReader reader, int largestDimensionSize, ChannelRange redRange,
-			ChannelRange greenRange, ChannelRange blueRange, boolean print, int dilateErodeKernelSize,
+	private static void DoMixtureOperations(ImageReader reader, int largestDimensionSize, ChannelRange c1Range,
+			ChannelRange c2Range, ChannelRange c3Range, boolean print, int dilateErodeKernelSize,
 			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
 			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
 
@@ -375,16 +381,26 @@ public class ImageTest {
 		ImageScaleOperation scaleOp = new ImageScaleOperation(m, largestDimensionSize);
 		m = scaleOp.resize();
 		
-		m = MatrixUtilities.reverseColorChannels(m);
-
+//		m = MatrixUtilities.reverseColorChannels(m);
+		
+		OCVBGR2HSVOperation bgr2hsvOp = new OCVBGR2HSVOperation();
+		m = bgr2hsvOp.doOperation(m);
+				
+		OCVHSV2BGROperation hsv2bgrOp = new OCVHSV2BGROperation();
+		
 		if (print) {
-			Mat tempM = new PixelMatrix(m).toMat();
+			
+//			Mat m2 = new Mat(m, new Rect(new org.opencv.core.Point(0, 0), m.size()));
+//			m2 = hsv2bgrOp.doOperation(m2);
+//			m2 = MatrixUtilities.reverseColorChannels(m2);
+//			
+//			Mat tempM = new PixelMatrix(m2).toMat();
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
-			writer.write(tempM);
+			writer.write(m);
 		}
 
 		// filter colors
-		OpenCVOperation filterOp = new OCVFilterColorOperation(redRange, greenRange, blueRange);
+		OpenCVOperation filterOp = new OCVFilterColorOperation(c1Range, c2Range, c3Range);
 
 		// // dilate the white areas in the image to "heal" broken lines
 		OpenCVOperation dilateOp = new OCVDilationOperation(dilateErodeKernelSize);

@@ -8,16 +8,16 @@ import org.usfirst.frc.team5417.robot.ChannelRange;
 
 public class OCVFilterColorOperation implements OpenCVOperation {
 
-	private ChannelRange redRange;
-	private ChannelRange greenRange;
-	private ChannelRange blueRange;
+	private ChannelRange c1Range;
+	private ChannelRange c2Range;
+	private ChannelRange c3Range;
 
 	public String name() { return "Open CV Filter Colors"; } 
 
-	public OCVFilterColorOperation(ChannelRange redRange, ChannelRange greenRange, ChannelRange blueRange) {
-		this.redRange = redRange;
-		this.greenRange = greenRange;
-		this.blueRange = blueRange;
+	public OCVFilterColorOperation(ChannelRange c1Range, ChannelRange c2Range, ChannelRange c3Range) {
+		this.c1Range = c1Range;
+		this.c2Range = c2Range;
+		this.c3Range = c3Range;
 	}
 
 	
@@ -26,8 +26,8 @@ public class OCVFilterColorOperation implements OpenCVOperation {
 		
 		Mat result = new Mat();
 		
-		Scalar lowerBound = new Scalar(redRange.getLowerBound(), greenRange.getLowerBound(), blueRange.getLowerBound());
-		Scalar upperBound = new Scalar(redRange.getUpperBound(), greenRange.getUpperBound(), blueRange.getUpperBound());
+		Scalar lowerBound = new Scalar(c1Range.getLowerBound(), c2Range.getLowerBound(), c3Range.getLowerBound());
+		Scalar upperBound = new Scalar(c1Range.getUpperBound(), c2Range.getUpperBound(), c3Range.getUpperBound());
 		
 		Core.inRange(m, lowerBound, upperBound, result);
 		

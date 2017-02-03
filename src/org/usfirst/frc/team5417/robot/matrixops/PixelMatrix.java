@@ -32,6 +32,9 @@ public class PixelMatrix {
 		
 		for (int r = 0; r < m.rows(); r++) {
 			for (int c = 0; c < m.cols(); c++) {
+//				if (c == 136 && r == 66) {
+//					System.out.println("this is green");
+//				}
 				double[] pixel = m.get(r, c);
 				if (pixel.length == 3) {
 					this.put(r, c, pixel);

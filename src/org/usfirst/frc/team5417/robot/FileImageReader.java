@@ -38,9 +38,8 @@ public class FileImageReader implements ImageReader {
 		
 		Mat threeChannel = m;
 		
-		// the rows/cols are swapped here intentionally
-		Mat doubleMat = new Mat(rowcount, colcount, CvType.CV_16UC3);
-		threeChannel.assignTo(doubleMat, CvType.CV_16UC3);
+		Mat doubleMat = new Mat(rowcount, colcount, CvType.CV_32F);
+		threeChannel.assignTo(doubleMat, CvType.CV_32F);
 
 		return doubleMat;
 	}
