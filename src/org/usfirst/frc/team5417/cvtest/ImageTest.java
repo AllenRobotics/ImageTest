@@ -471,7 +471,7 @@ public class ImageTest {
 				FindDistanceOperation findDistanceOp = new FindDistanceOperation(centersOfMass);
 
 				elapsedSecondsStopwatch.start();
-				distance = findDistanceOp.findDistance(pixelMatrix) * scaleOp.getInverseScaleFactor();
+				distance = findDistanceOp.findDistance() * scaleOp.getInverseScaleFactor();
 				elapsedSecondsStopwatch.stop();
 
 				System.out.println("distance equals " + distance);
