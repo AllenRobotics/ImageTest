@@ -2,9 +2,8 @@ package org.usfirst.frc.team5417.cvtest.matrixops;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
-import org.usfirst.frc.team5417.cv2017.customops.Pixel;
-import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
-import org.usfirst.frc.team5417.cv2017.customops.PixelMatrixOperation;
+import org.usfirst.frc.team5417.cv2017.opencvops.*;
+import org.usfirst.frc.team5417.cvtest.*;
 
 //
 // Convert to grayscale

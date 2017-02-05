@@ -9,7 +9,6 @@ import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.usfirst.frc.team5417.cv2017.*;
-import org.usfirst.frc.team5417.cv2017.customops.*;
 import org.usfirst.frc.team5417.cv2017.opencvops.*;
 import org.usfirst.frc.team5417.cvtest.matrixops.*;
 import org.usfirst.frc.team5417.cvtest.opencvops.*;
@@ -57,23 +56,23 @@ public class ImageTest {
 		int largestDimensionSize = 600;
 		int dilateErodeKernelSize = 11;
 		int removeGroupsSmallerThan = 100;
-		double minimumTemplateScale = 0.25, maximumTemplateScale = 4;
+		int numberOfScaleFactors = 10;
 		double minimumTemplateMatchPercentage = 0.7;
 
 		//
 		// warm up the jvm with JIT and stuff
 		//
 		DoMixtureOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, false,
-				dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
-				minimumTemplateMatchPercentage, templatesToUse, lookUpTableToUse);
+				dilateErodeKernelSize, removeGroupsSmallerThan, numberOfScaleFactors, minimumTemplateMatchPercentage,
+				templatesToUse, lookUpTableToUse);
 		// DoPixelMatrixOperations(imageReader, redRange, greenRange, blueRange,
 		// false, dilateErodeKernelSize,
 		// removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
 		// minimumTemplateMatchPercentage,
 		// templatesToUse);
 		DoOpenCVOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, false,
-				dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
-				minimumTemplateMatchPercentage, templatesToUse);
+				dilateErodeKernelSize, removeGroupsSmallerThan, numberOfScaleFactors, minimumTemplateMatchPercentage,
+				templatesToUse);
 
 		//
 		// print results after warm up
@@ -87,13 +86,12 @@ public class ImageTest {
 		// System.out.println();
 		//
 		DoOpenCVOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, true, dilateErodeKernelSize,
-				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
-				templatesToUse);
+				removeGroupsSmallerThan, numberOfScaleFactors, minimumTemplateMatchPercentage, templatesToUse);
 		System.out.println();
 
 		DoMixtureOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, true,
-				dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
-				minimumTemplateMatchPercentage, templatesToUse, lookUpTableToUse);
+				dilateErodeKernelSize, removeGroupsSmallerThan, numberOfScaleFactors, minimumTemplateMatchPercentage,
+				templatesToUse, lookUpTableToUse);
 		System.out.println();
 	}
 
@@ -268,8 +266,8 @@ public class ImageTest {
 	//
 	private static void DoOpenCVOperations(ImageReader reader, int largestDimensionSize, ChannelRange c1Range,
 			ChannelRange c2Range, ChannelRange c3Range, boolean print, int dilateErodeKernelSize,
-			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
-			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
+			int removeGroupsSmallerThan, int numberOfScaleFactors, double minimumTemplateMatchPercentage,
+			List<BooleanMatrix> templatesToUse) {
 
 		String logPrefix = "OpenCV";
 
@@ -317,24 +315,10 @@ public class ImageTest {
 
 		List<Color> groupColors = findGroupsOp.getOutputColors();
 
-//		// remove all groups with too few pixels
-//		OCVRemoveSmallGroupsOperation removeGroupsOp = new OCVRemoveSmallGroupsOperation(removeGroupsSmallerThan, groupColors);
-//
-//		m = DoOpenCVOperation(removeGroupsOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
-//				print);
-//
-//		groupColors = removeGroupsOp.getOutputColors();
-//		
-//		// remove all groups that don't match a template
-//		OpenCVOperation matchTemplatesOp = new OCVMatchTemplatesOperation(templatesToUse, minimumTemplateScale,
-//				maximumTemplateScale, minimumTemplateMatchPercentage, groupColors);
-//
-//		m = DoOpenCVOperation(matchTemplatesOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
-//				print);
-
 		// remove all groups with too few pixels
-		OCVMatchTemplatesAndRemoveSmallGroupsOperation matchAndRemoveOp = new OCVMatchTemplatesAndRemoveSmallGroupsOperation(removeGroupsSmallerThan, templatesToUse, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, groupColors);
+		OCVMatchTemplatesAndRemoveSmallGroupsOperation matchAndRemoveOp = new OCVMatchTemplatesAndRemoveSmallGroupsOperation(
+				removeGroupsSmallerThan, templatesToUse, numberOfScaleFactors, minimumTemplateMatchPercentage,
+				groupColors);
 
 		m = DoOpenCVOperation(matchAndRemoveOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
 				print);
@@ -364,8 +348,8 @@ public class ImageTest {
 
 	private static void DoMixtureOperations(ImageReader reader, int largestDimensionSize, ChannelRange c1Range,
 			ChannelRange c2Range, ChannelRange c3Range, boolean print, int dilateErodeKernelSize,
-			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
-			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse, double[] lookUpTableToUse) {
+			int removeGroupsSmallerThan, int numberOfScaleFactors, double minimumTemplateMatchPercentage,
+			List<BooleanMatrix> templatesToUse, double[] lookUpTableToUse) {
 
 		String logPrefix = "Mixture";
 
@@ -445,8 +429,8 @@ public class ImageTest {
 		PixelMatrixOperation removeGroupsOp = new RemoveSmallGroupsOperation(removeGroupsSmallerThan, groupSizes);
 
 		// remove all groups that don't match a template
-		PixelMatrixOperation matchTemplatesOp = new MatchTemplatesOperation(templatesToUse, minimumTemplateScale,
-				maximumTemplateScale, minimumTemplateMatchPercentage, groupSizes);
+		PixelMatrixOperation matchTemplatesOp = new MatchTemplatesOperation(templatesToUse, numberOfScaleFactors,
+				minimumTemplateMatchPercentage, groupSizes);
 
 		pixelMatrix = DoPixelMatrixOperation(removeGroupsOp, pixelMatrix, operationNumber++, elapsedSecondsStopwatch,
 				decimalFormat, logPrefix, print);
@@ -456,24 +440,30 @@ public class ImageTest {
 		if (print) {
 			double distance = 0;
 			try {
-//				HashMap<Pixel, Point> centersOfMass = MatrixUtilities.findCentersOfMass(pixelMatrix);
-//				FindDistanceOperation findDistanceOp = new FindDistanceOperation(centersOfMass, lookUpTableToUse);
-//
-//				elapsedSecondsStopwatch.start();
-//				distance = findDistanceOp.findDistanceInPixels() * scaleOp.getInverseScaleFactor();
-//				distance = findDistanceOp.findDistanceInFeet(distance);
-//				elapsedSecondsStopwatch.stop();
-//
-//				System.out.println("distance equals " + distance);
-//
-//				FindTargetPointOperation findTargetOp = new FindTargetPointOperation(centersOfMass);
-//
-//				elapsedSecondsStopwatch.start();
-//				PointD targetPoint = findTargetOp.findTargetPoint();
-//				targetPoint = targetPoint.adjustByScale(scaleOp.getInverseScaleFactor());
-//				elapsedSecondsStopwatch.stop();
-//
-//				System.out.println("Target Point = (" + targetPoint.getX() + ", " + targetPoint.getY() + ")");
+				// HashMap<Pixel, Point> centersOfMass =
+				// MatrixUtilities.findCentersOfMass(pixelMatrix);
+				// FindDistanceOperation findDistanceOp = new
+				// FindDistanceOperation(centersOfMass, lookUpTableToUse);
+				//
+				// elapsedSecondsStopwatch.start();
+				// distance = findDistanceOp.findDistanceInPixels() *
+				// scaleOp.getInverseScaleFactor();
+				// distance = findDistanceOp.findDistanceInFeet(distance);
+				// elapsedSecondsStopwatch.stop();
+				//
+				// System.out.println("distance equals " + distance);
+				//
+				// FindTargetPointOperation findTargetOp = new
+				// FindTargetPointOperation(centersOfMass);
+				//
+				// elapsedSecondsStopwatch.start();
+				// PointD targetPoint = findTargetOp.findTargetPoint();
+				// targetPoint =
+				// targetPoint.adjustByScale(scaleOp.getInverseScaleFactor());
+				// elapsedSecondsStopwatch.stop();
+				//
+				// System.out.println("Target Point = (" + targetPoint.getX() +
+				// ", " + targetPoint.getY() + ")");
 
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());

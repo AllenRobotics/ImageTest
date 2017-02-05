@@ -1,11 +1,8 @@
 package org.usfirst.frc.team5417.cvtest.matrixops;
 
 import org.opencv.core.Mat;
-import org.usfirst.frc.team5417.cv2017.ChannelRange;
-import org.usfirst.frc.team5417.cv2017.customops.Pixel;
-import org.usfirst.frc.team5417.cv2017.customops.PixelMatrix;
-import org.usfirst.frc.team5417.cv2017.customops.PixelMatrixOperation;
-import org.usfirst.frc.team5417.cv2017.MatrixUtilities;
+import org.usfirst.frc.team5417.cv2017.*;
+import org.usfirst.frc.team5417.cvtest.*;
 
 //
 // Filters colors using the ranges passed to the constructor
