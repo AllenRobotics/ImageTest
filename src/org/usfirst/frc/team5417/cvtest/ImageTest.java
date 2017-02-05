@@ -37,21 +37,24 @@ public class ImageTest {
 
 		List<BooleanMatrix> templatesToUse = horizontalTemplates;
 
-		// Real images
-//		ChannelRange redRange = new ChannelRange(0, 30);
-//		ChannelRange greenRange = new ChannelRange(230, 255);
-//		ChannelRange blueRange = new ChannelRange(140, 200);
+		double[] gearLookUpTable = { 500, // 0 feet
+				199, // 1 foot
+				110, 77.5, 57, 45.5, 39, 33, 29, 25 // 9 feet
+		};
 
-		//Real images HSV
-		ChannelRange hueRange = new ChannelRange(130, 180);
-		ChannelRange satRange = new ChannelRange(.7, 1.0);
-		ChannelRange valRange = new ChannelRange(220, 256);
-		
-		// Test images
-		// ChannelRange redRange = new ChannelRange(10, 55);
-		// ChannelRange greenRange = new ChannelRange(150, 200);
-		// ChannelRange blueRange = new ChannelRange(50, 100);
+		double[] lookUpTableToUse = gearLookUpTable;
 
+		// Real images HSV
+		// ChannelRange hueRange = new ChannelRange(130, 180);
+		// ChannelRange satRange = new ChannelRange(.7, 1.0);
+		// ChannelRange valRange = new ChannelRange(220, 256);
+
+		// Test images HSV
+		ChannelRange hueRange = new ChannelRange(130, 150);
+		ChannelRange satRange = new ChannelRange(.5, 1.0);
+		ChannelRange valRange = new ChannelRange(130, 200);
+
+		int largestDimensionSize = 600;
 		int dilateErodeKernelSize = 11;
 		int removeGroupsSmallerThan = 100;
 		double minimumTemplateScale = 0.25, maximumTemplateScale = 4;
@@ -60,19 +63,17 @@ public class ImageTest {
 		//
 		// warm up the jvm with JIT and stuff
 		//
-		DoMixtureOperations(imageReader, 400, hueRange, satRange, valRange, false, dilateErodeKernelSize,
-				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
-				templatesToUse);
+		DoMixtureOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, false,
+				dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
+				minimumTemplateMatchPercentage, templatesToUse, lookUpTableToUse);
 		// DoPixelMatrixOperations(imageReader, redRange, greenRange, blueRange,
 		// false, dilateErodeKernelSize,
 		// removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
 		// minimumTemplateMatchPercentage,
 		// templatesToUse);
-		// DoOpenCVOperations(imageReader, redRange, greenRange, blueRange,
-		// false, dilateErodeKernelSize,
-		// removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
-		// minimumTemplateMatchPercentage,
-		// templatesToUse);
+		DoOpenCVOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, false,
+				dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
+				minimumTemplateMatchPercentage, templatesToUse);
 
 		//
 		// print results after warm up
@@ -85,16 +86,14 @@ public class ImageTest {
 		// templatesToUse);
 		// System.out.println();
 		//
-		// DoOpenCVOperations(imageReader, redRange, greenRange, blueRange,
-		// true, dilateErodeKernelSize,
-		// removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
-		// minimumTemplateMatchPercentage,
-		// templatesToUse);
-		// System.out.println();
-
-		DoMixtureOperations(imageReader, 400, hueRange, satRange, valRange, true, dilateErodeKernelSize,
+		DoOpenCVOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, true, dilateErodeKernelSize,
 				removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale, minimumTemplateMatchPercentage,
 				templatesToUse);
+		System.out.println();
+
+		DoMixtureOperations(imageReader, largestDimensionSize, hueRange, satRange, valRange, true,
+				dilateErodeKernelSize, removeGroupsSmallerThan, minimumTemplateScale, maximumTemplateScale,
+				minimumTemplateMatchPercentage, templatesToUse, lookUpTableToUse);
 		System.out.println();
 	}
 
@@ -121,8 +120,9 @@ public class ImageTest {
 		return m;
 	}
 
-	private static PixelMatrix DoPixelMatrixOperation(PixelMatrixOperation op, PixelMatrix pixelMatrix, int operationNumber,
-			Stopwatch elapsedTimeStopwatch, DecimalFormat decimalFormat, String logPrefix, boolean print) {
+	private static PixelMatrix DoPixelMatrixOperation(PixelMatrixOperation op, PixelMatrix pixelMatrix,
+			int operationNumber, Stopwatch elapsedTimeStopwatch, DecimalFormat decimalFormat, String logPrefix,
+			boolean print) {
 
 		double startElapsedSeconds = elapsedTimeStopwatch.getTotalSeconds();
 
@@ -266,138 +266,127 @@ public class ImageTest {
 	// }
 	// }
 	//
-	// private static void DoOpenCVOperations(ImageReader reader, ChannelRange
-	// redRange, ChannelRange greenRange,
-	// ChannelRange blueRange, boolean print, int dilateErodeKernelSize, int
-	// removeGroupsSmallerThan,
-	// double minimumTemplateScale, double maximumTemplateScale, double
-	// minimumTemplateMatchPercentage,
-	// List<BooleanMatrix> templatesToUse) {
-	//
-	// String logPrefix = "OpenCV";
-	//
-	// Mat m = reader.read();
-	// m = MatrixUtilities.reverseColorChannels(m);
-	//
-	// if (print) {
-	// Mat tempM = new PixelMatrix(m).toMat();
-	// ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix +
-	// "-operation-step-0.png");
-	// writer.write(tempM);
-	// }
-	//
-	// // filter colors
-	// OpenCVOperation filterOp = new OCVFilterColorOperation(redRange,
-	// greenRange, blueRange);
-	//
-	// // dilate the white areas in the image to "heal" broken lines
-	// OpenCVOperation dilateOp = new
-	// OCVDilationOperation(dilateErodeKernelSize);
-	//
-	// // erode the white areas in the image (sort of undoes the dilation, but
-	// // keeps "healed" lines)
-	// OpenCVOperation erodeOp = new OCVErosionOperation(dilateErodeKernelSize);
-	//
-	// // find groups (operates on gray scale, outputs color)
-	// //
-	// // only use one of these methods. just choose the fastest one
-	// // OpenCVOperation findGroupsOp = new OCVFindGroupsWithFillOperation();
-	// OpenCVOperation findGroupsOp = new OCVFindGroupsOperation();
-	//
-	// DecimalFormat decimalFormat = new DecimalFormat("0.000000");
-	// Stopwatch elapsedSecondsStopwatch = new Stopwatch();
-	//
-	// int operationNumber = 1;
-	// m = DoOpenCVOperation(filterOp, m, operationNumber++,
-	// elapsedSecondsStopwatch, decimalFormat, logPrefix, print);
-	// m = DoOpenCVOperation(dilateOp, m, operationNumber++,
-	// elapsedSecondsStopwatch, decimalFormat, logPrefix, print);
-	// m = DoOpenCVOperation(erodeOp, m, operationNumber++,
-	// elapsedSecondsStopwatch, decimalFormat, logPrefix, print);
-	// m = DoOpenCVOperation(findGroupsOp, m, operationNumber++,
-	// elapsedSecondsStopwatch, decimalFormat, logPrefix,
-	// print);
-	//
-	// double startElapsedSeconds = elapsedSecondsStopwatch.getTotalSeconds();
-	// elapsedSecondsStopwatch.start();
-	//
-	// // calculate the group sizes
-	// HashMap<Color, Integer> groupSizes = MatrixUtilities.getGroupSizes(m);
-	//
-	// elapsedSecondsStopwatch.stop();
-	// double endElapsedSeconds = elapsedSecondsStopwatch.getTotalSeconds();
-	//
-	// if (print)
-	// System.out.println(
-	// "getGroupSizes took " + decimalFormat.format(endElapsedSeconds -
-	// startElapsedSeconds) + " seconds");
-	//
-	// // remove all groups with too few pixels
-	// OpenCVOperation removeGroupsOp = new
-	// OCVRemoveSmallGroupsOperation(removeGroupsSmallerThan, groupSizes);
-	//
-	// // remove all groups that don't match a template
-	// OpenCVOperation matchTemplatesOp = new
-	// OCVMatchTemplatesOperation(templatesToUse, minimumTemplateScale,
-	// maximumTemplateScale, minimumTemplateMatchPercentage, groupSizes);
-	//
-	// m = DoOpenCVOperation(removeGroupsOp, m, operationNumber++,
-	// elapsedSecondsStopwatch, decimalFormat, logPrefix,
-	// print);
-	// m = DoOpenCVOperation(matchTemplatesOp, m, operationNumber++,
-	// elapsedSecondsStopwatch, decimalFormat, logPrefix,
-	// print);
-	//
-	// if (print) {
-	// System.out.println("All " + logPrefix + " operations took "
-	// + decimalFormat.format(elapsedSecondsStopwatch.getTotalSeconds()) + "
-	// seconds");
-	//
-	// ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix +
-	// "-outputImage.png");
-	// writer.write(m);
-	// }
-	//
-	// if (print) {
-	// double distance = 0;
-	// try {
-	// PixelMatrix pixelMatrix = new PixelMatrix(m);
-	//
-	// FindDistanceOperation findDistanceOp = new FindDistanceOperation();
-	// distance = findDistanceOp.findDistance(pixelMatrix);
-	// System.out.println("distance equals " + distance);
-	// } catch (Exception ex) {
-	// System.err.println(ex.getMessage());
-	// }
-	// }
-	// }
-
-	private static void DoMixtureOperations(ImageReader reader, int largestDimensionSize, ChannelRange c1Range,
+	private static void DoOpenCVOperations(ImageReader reader, int largestDimensionSize, ChannelRange c1Range,
 			ChannelRange c2Range, ChannelRange c3Range, boolean print, int dilateErodeKernelSize,
 			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
 			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse) {
 
+		String logPrefix = "OpenCV";
+
+		Mat m = reader.read();
+
+		ImageScaleOperation scaleOp = new ImageScaleOperation(m, largestDimensionSize);
+		m = scaleOp.resize();
+
+		// m = MatrixUtilities.reverseColorChannels(m);
+
+		OCVBGR2HSVOperation bgr2hsvOp = new OCVBGR2HSVOperation();
+		m = bgr2hsvOp.doOperation(m);
+
+		if (print) {
+			Mat tempM = new PixelMatrix(m).toMat();
+			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
+			writer.write(tempM);
+		}
+
+		// filter colors
+		OpenCVOperation filterOp = new OCVFilterColorOperation(c1Range, c2Range, c3Range);
+
+		// dilate the white areas in the image to "heal" broken lines
+		OpenCVOperation dilateOp = new OCVDilationOperation(dilateErodeKernelSize);
+
+		// erode the white areas in the image (sort of undoes the dilation, but
+		// keeps "healed" lines)
+		OpenCVOperation erodeOp = new OCVErosionOperation(dilateErodeKernelSize);
+
+		// find groups (operates on gray scale, outputs color)
+		//
+		// only use one of these methods. just choose the fastest one
+		OCVFindGroupsWithFillOperation findGroupsOp = new OCVFindGroupsWithFillOperation();
+		// OCVFindGroupsOperation findGroupsOp = new OCVFindGroupsOperation();
+
+		DecimalFormat decimalFormat = new DecimalFormat("0.000000");
+		Stopwatch elapsedSecondsStopwatch = new Stopwatch();
+
+		int operationNumber = 1;
+		m = DoOpenCVOperation(filterOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix, print);
+		m = DoOpenCVOperation(dilateOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix, print);
+		m = DoOpenCVOperation(erodeOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix, print);
+		m = DoOpenCVOperation(findGroupsOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
+				print);
+
+		List<Color> groupColors = findGroupsOp.getOutputColors();
+
+//		// remove all groups with too few pixels
+//		OCVRemoveSmallGroupsOperation removeGroupsOp = new OCVRemoveSmallGroupsOperation(removeGroupsSmallerThan, groupColors);
+//
+//		m = DoOpenCVOperation(removeGroupsOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
+//				print);
+//
+//		groupColors = removeGroupsOp.getOutputColors();
+//		
+//		// remove all groups that don't match a template
+//		OpenCVOperation matchTemplatesOp = new OCVMatchTemplatesOperation(templatesToUse, minimumTemplateScale,
+//				maximumTemplateScale, minimumTemplateMatchPercentage, groupColors);
+//
+//		m = DoOpenCVOperation(matchTemplatesOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
+//				print);
+
+		// remove all groups with too few pixels
+		OCVMatchTemplatesAndRemoveSmallGroupsOperation matchAndRemoveOp = new OCVMatchTemplatesAndRemoveSmallGroupsOperation(removeGroupsSmallerThan, templatesToUse, minimumTemplateScale,
+				maximumTemplateScale, minimumTemplateMatchPercentage, groupColors);
+
+		m = DoOpenCVOperation(matchAndRemoveOp, m, operationNumber++, elapsedSecondsStopwatch, decimalFormat, logPrefix,
+				print);
+
+		if (print) {
+			System.out.println("All " + logPrefix + " operations took "
+					+ decimalFormat.format(elapsedSecondsStopwatch.getTotalSeconds()) + " seconds");
+
+			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-outputImage.png");
+			writer.write(m);
+		}
+
+		if (print) {
+			double distance = 0;
+			try {
+				// PixelMatrix pixelMatrix = new PixelMatrix(m);
+				//
+				// FindDistanceOperation findDistanceOp = new
+				// FindDistanceOperation();
+				// distance = findDistanceOp.findDistance(pixelMatrix);
+				// System.out.println("distance equals " + distance);
+			} catch (Exception ex) {
+				System.err.println(ex.getMessage());
+			}
+		}
+	}
+
+	private static void DoMixtureOperations(ImageReader reader, int largestDimensionSize, ChannelRange c1Range,
+			ChannelRange c2Range, ChannelRange c3Range, boolean print, int dilateErodeKernelSize,
+			int removeGroupsSmallerThan, double minimumTemplateScale, double maximumTemplateScale,
+			double minimumTemplateMatchPercentage, List<BooleanMatrix> templatesToUse, double[] lookUpTableToUse) {
+
 		String logPrefix = "Mixture";
 
 		Mat m = reader.read();
-		
+
 		ImageScaleOperation scaleOp = new ImageScaleOperation(m, largestDimensionSize);
 		m = scaleOp.resize();
-		
-//		m = MatrixUtilities.reverseColorChannels(m);
-		
+
+		// m = MatrixUtilities.reverseColorChannels(m);
+
 		OCVBGR2HSVOperation bgr2hsvOp = new OCVBGR2HSVOperation();
 		m = bgr2hsvOp.doOperation(m);
-				
-		OCVHSV2BGROperation hsv2bgrOp = new OCVHSV2BGROperation();
-		
+
 		if (print) {
-			
-//			Mat m2 = new Mat(m, new Rect(new org.opencv.core.Point(0, 0), m.size()));
-//			m2 = hsv2bgrOp.doOperation(m2);
-//			m2 = MatrixUtilities.reverseColorChannels(m2);
-//			
-//			Mat tempM = new PixelMatrix(m2).toMat();
+
+			// Mat m2 = new Mat(m, new Rect(new org.opencv.core.Point(0, 0),
+			// m.size()));
+			// m2 = hsv2bgrOp.doOperation(m2);
+			// m2 = MatrixUtilities.reverseColorChannels(m2);
+			//
+			// Mat tempM = new PixelMatrix(m2).toMat();
 			ImageWriter writer = new FileImageWriter("C:/temp/" + logPrefix + "-operation-step-0.png");
 			writer.write(m);
 		}
@@ -467,23 +456,24 @@ public class ImageTest {
 		if (print) {
 			double distance = 0;
 			try {
-				HashMap<Pixel, Point> centersOfMass = MatrixUtilities.findCentersOfMass(pixelMatrix);
-				FindDistanceOperation findDistanceOp = new FindDistanceOperation(centersOfMass);
-
-				elapsedSecondsStopwatch.start();
-				distance = findDistanceOp.findDistance() * scaleOp.getInverseScaleFactor();
-				elapsedSecondsStopwatch.stop();
-
-				System.out.println("distance equals " + distance);
-
-				FindTargetPointOperation findTargetOp = new FindTargetPointOperation(centersOfMass);
-
-				elapsedSecondsStopwatch.start();
-				PointD targetPoint = findTargetOp.findTargetPoint();
-				targetPoint = targetPoint.adjustByScale(scaleOp.getInverseScaleFactor());
-				elapsedSecondsStopwatch.stop();
-
-				System.out.println("Target Point = (" + targetPoint.getX() + ", " + targetPoint.getY() + ")");
+//				HashMap<Pixel, Point> centersOfMass = MatrixUtilities.findCentersOfMass(pixelMatrix);
+//				FindDistanceOperation findDistanceOp = new FindDistanceOperation(centersOfMass, lookUpTableToUse);
+//
+//				elapsedSecondsStopwatch.start();
+//				distance = findDistanceOp.findDistanceInPixels() * scaleOp.getInverseScaleFactor();
+//				distance = findDistanceOp.findDistanceInFeet(distance);
+//				elapsedSecondsStopwatch.stop();
+//
+//				System.out.println("distance equals " + distance);
+//
+//				FindTargetPointOperation findTargetOp = new FindTargetPointOperation(centersOfMass);
+//
+//				elapsedSecondsStopwatch.start();
+//				PointD targetPoint = findTargetOp.findTargetPoint();
+//				targetPoint = targetPoint.adjustByScale(scaleOp.getInverseScaleFactor());
+//				elapsedSecondsStopwatch.stop();
+//
+//				System.out.println("Target Point = (" + targetPoint.getX() + ", " + targetPoint.getY() + ")");
 
 			} catch (Exception ex) {
 				System.err.println(ex.getMessage());
